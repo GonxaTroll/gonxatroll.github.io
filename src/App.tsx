@@ -433,6 +433,18 @@ function getStartYear(period: string) {
 const experienceSkillChipClassName =
   'shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
 
+type KirbySprite = {
+  id: number
+  gifUrl: string
+  x: number
+  y: number
+  vx: number
+  vy: number
+  isDragging: boolean
+}
+
+const KIRBY_GIF = 'https://media.tenor.com/JMcX2m_W3owAAAAj/kirby-dancing.gif'
+
 function App() {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
@@ -445,6 +457,7 @@ function App() {
   const [certificationIndex, setCertificationIndex] = useState(0)
   const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
+  const [kirbySprites, setKirbySprites] = useState<KirbySprite[]>([])
   const [showAllExperiences, setShowAllExperiences] = useState(false)
   const [showAllProjects, setShowAllProjects] = useState(false)
   const [showAllContributions, setShowAllContributions] = useState(false)
@@ -458,6 +471,22 @@ function App() {
   const skillRowRefs = useRef<Record<number, HTMLDivElement | null>>({})
   const experienceTimelineRef = useRef<HTMLDivElement | null>(null)
   const experienceCardRefs = useRef<Record<number, HTMLButtonElement | null>>({})
+  const kirbyIdRef = useRef(1)
+  const kirbyDragRef = useRef<
+    Record<
+      number,
+      {
+        pointerId: number
+        offsetX: number
+        offsetY: number
+        lastX: number
+        lastY: number
+        lastTime: number
+        vx: number
+        vy: number
+      }
+    >
+  >({})
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -515,14 +544,217 @@ function App() {
         return
       }
 
-      const aboutBottom = aboutRef.current.getBoundingClientRect().bottom
-      setShowStickyHeader(aboutBottom < 0)
+      const rect = aboutRef.current.getBoundingClientRect()
+      // Show when 60% of the about section has scrolled past the top
+      setShowStickyHeader(rect.bottom < rect.height * 0.4)
     }
 
     window.addEventListener('scroll', handleScroll)
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const hasActiveKirby = kirbySprites.some(
+      (sprite) =>
+        sprite.isDragging || Math.abs(sprite.vx) > 0.01 || Math.abs(sprite.vy) > 0.01,
+    )
+
+    if (!hasActiveKirby) {
+      return
+    }
+
+    let animationFrame = 0
+    let lastTime = performance.now()
+    const spriteSize = 80
+    const wallBounce = 0.78
+    const floorFriction = 0.92
+    const airFrictionPerMs = 0.9993
+    const gravity = 0.0022
+
+    const tick = (currentTime: number) => {
+      const deltaMs = Math.min(34, Math.max(currentTime - lastTime, 8))
+      lastTime = currentTime
+
+      setKirbySprites((currentSprites) => {
+        const maxX = Math.max(window.innerWidth - spriteSize, 0)
+        const maxY = Math.max(window.innerHeight - spriteSize, 0)
+
+        return currentSprites.map((sprite) => {
+          if (sprite.isDragging) {
+            return sprite
+          }
+
+          let vx = sprite.vx
+          let vy = sprite.vy + gravity * deltaMs
+          let x = sprite.x + vx * deltaMs
+          let y = sprite.y + vy * deltaMs
+
+          const airFriction = Math.pow(airFrictionPerMs, deltaMs)
+          vx *= airFriction
+          vy *= airFriction
+
+          if (x <= 0) {
+            x = 0
+            vx = Math.abs(vx) * wallBounce
+          } else if (x >= maxX) {
+            x = maxX
+            vx = -Math.abs(vx) * wallBounce
+          }
+
+          if (y <= 0) {
+            y = 0
+            vy = Math.abs(vy) * wallBounce
+          } else if (y >= maxY) {
+            y = maxY
+            vy = -Math.abs(vy) * wallBounce
+            vx *= floorFriction
+
+            if (Math.abs(vy) < 0.05) {
+              vy = 0
+            }
+            if (Math.abs(vx) < 0.01) {
+              vx = 0
+            }
+          }
+
+          return { ...sprite, x, y, vx, vy }
+        })
+      })
+
+      animationFrame = window.requestAnimationFrame(tick)
+    }
+
+    animationFrame = window.requestAnimationFrame(tick)
+
+    return () => window.cancelAnimationFrame(animationFrame)
+  }, [kirbySprites])
+
+  const spawnKirby = () => {
+    if (kirbySprites.length > 0) {
+      return
+    }
+
+    const spriteSize = 80
+    const margin = 16
+    const startX = Math.max(window.innerWidth - spriteSize - margin, margin)
+    const startY = Math.min(120, window.innerHeight - spriteSize - margin)
+
+    const sprite: KirbySprite = {
+      id: kirbyIdRef.current,
+      gifUrl: KIRBY_GIF,
+      x: startX,
+      y: Math.max(startY, margin),
+      vx: 0,
+      vy: 0,
+      isDragging: false,
+    }
+
+    kirbyIdRef.current += 1
+    setKirbySprites((sprites) => [...sprites, sprite])
+  }
+
+  const updateKirbyPosition = (
+    spriteId: number,
+    clientX: number,
+    clientY: number,
+    offsetX: number,
+    offsetY: number,
+  ) => {
+    const spriteSize = 80
+    const maxX = Math.max(window.innerWidth - spriteSize, 0)
+    const maxY = Math.max(window.innerHeight - spriteSize, 0)
+    const nextX = Math.min(Math.max(clientX - offsetX, 0), maxX)
+    const nextY = Math.min(Math.max(clientY - offsetY, 0), maxY)
+
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId ? { ...sprite, x: nextX, y: nextY } : sprite,
+      ),
+    )
+  }
+
+  const handleKirbyPointerDown = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault()
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    kirbyDragRef.current[spriteId] = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      lastTime: performance.now(),
+      vx: 0,
+      vy: 0,
+    }
+
+    event.currentTarget.setPointerCapture(event.pointerId)
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId
+          ? { ...sprite, isDragging: true, vx: 0, vy: 0 }
+          : sprite,
+      ),
+    )
+  }
+
+  const handleKirbyPointerMove = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    const dragState = kirbyDragRef.current[spriteId]
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return
+    }
+
+    const now = performance.now()
+    const dt = Math.max(now - dragState.lastTime, 8)
+    dragState.vx = (event.clientX - dragState.lastX) / dt
+    dragState.vy = (event.clientY - dragState.lastY) / dt
+    dragState.lastX = event.clientX
+    dragState.lastY = event.clientY
+    dragState.lastTime = now
+
+    updateKirbyPosition(
+      spriteId,
+      event.clientX,
+      event.clientY,
+      dragState.offsetX,
+      dragState.offsetY,
+    )
+  }
+
+  const releaseKirby = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    const dragState = kirbyDragRef.current[spriteId]
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return
+    }
+
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId
+          ? {
+              ...sprite,
+              isDragging: false,
+              vx: dragState.vx * 1.2,
+              vy: dragState.vy * 1.2,
+            }
+          : sprite,
+      ),
+    )
+
+    delete kirbyDragRef.current[spriteId]
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
 
   const visibleCertifications = certificationsByProvider.slice(
     certificationIndex,
@@ -644,11 +876,33 @@ function App() {
   return (
     <div className="page-bg isolate min-h-screen text-foreground">
       <div aria-hidden="true" className="page-glow pointer-events-none fixed inset-0 -z-10" />
+
+      {/* Floating Kirby easter egg */}
+      {kirbySprites.map((sprite) => (
+        <button
+          key={sprite.id}
+          type="button"
+          style={{ left: sprite.x, top: sprite.y }}
+          className="fixed z-[200] cursor-grab active:cursor-grabbing"
+          onPointerDown={(event) => handleKirbyPointerDown(sprite.id, event)}
+          onPointerMove={(event) => handleKirbyPointerMove(sprite.id, event)}
+          onPointerUp={(event) => releaseKirby(sprite.id, event)}
+          onPointerCancel={(event) => releaseKirby(sprite.id, event)}
+        >
+          <img
+            src={sprite.gifUrl}
+            alt="Floating Kirby"
+            className="pointer-events-none w-20 select-none"
+            draggable={false}
+          />
+        </button>
+      ))}
+
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-background/75 shadow-[0_8px_32px_rgba(0,0,0,0.40)] backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
           <button
             type="button"
-            className={`flex items-center gap-3 transition-all duration-300 ${
+            className={`group flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-300 hover:bg-white/5 ${
               showStickyHeader ? 'opacity-100' : 'pointer-events-none opacity-0'
             }`}
             onClick={() => scrollToId('about')}
@@ -656,7 +910,7 @@ function App() {
             <img
               src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
               alt="Gonzalo Candel"
-              className="h-10 w-10 rounded-full border-2 border-primary object-cover"
+              className="h-10 w-10 rounded-full border-2 border-primary object-cover transition-transform duration-200 group-hover:scale-105 group-hover:border-primary/80 group-hover:ring-2 group-hover:ring-primary/30"
             />
             <span className="text-left">
               <span className="block text-sm font-bold text-white">
@@ -694,14 +948,21 @@ function App() {
           <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-start lg:gap-16">
             {/* Left: photo + name + stats */}
             <div className="flex flex-col items-center gap-6">
-              {/* Photo frame */}
-              <div className="h-56 w-56 overflow-hidden rounded-full border-4 border-primary sm:h-64 sm:w-64">
+              {/* Photo frame — click for easter egg */}
+              <button
+                type="button"
+                aria-label="Secret"
+                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary sm:h-64 sm:w-64"
+                onClick={spawnKirby}
+              >
                 <img
                   src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
                   alt="Gonzalo Candel"
                   className="h-full w-full object-cover"
                 />
-              </div>
+              </button>
+
+              {/* Kirby easter egg — click photo to summon */}
 
               {/* Name + role */}
               <div className="text-center">
