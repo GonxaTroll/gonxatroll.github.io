@@ -425,6 +425,26 @@ function resolveAssetUrl(path: string) {
   return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
 }
 
+function getStartYear(period: string) {
+  const yearMatch = period.match(/\b(19|20)\d{2}\b/)
+  return yearMatch?.[0] ?? ''
+}
+
+const experienceSkillChipClassName =
+  'shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
+
+type KirbySprite = {
+  id: number
+  gifUrl: string
+  x: number
+  y: number
+  vx: number
+  vy: number
+  isDragging: boolean
+}
+
+const KIRBY_GIF = 'https://media.tenor.com/JMcX2m_W3owAAAAj/kirby-dancing.gif'
+
 function App() {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
@@ -437,12 +457,36 @@ function App() {
   const [certificationIndex, setCertificationIndex] = useState(0)
   const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
+  const [kirbySprites, setKirbySprites] = useState<KirbySprite[]>([])
   const [showAllExperiences, setShowAllExperiences] = useState(false)
   const [showAllProjects, setShowAllProjects] = useState(false)
   const [showAllContributions, setShowAllContributions] = useState(false)
   const [selectedProviderCerts, setSelectedProviderCerts] =
     useState<CertificationProvider | null>(null)
+  const [visibleSkillCountByExp, setVisibleSkillCountByExp] = useState<
+    Record<number, number>
+  >({})
+  const [activeTimelineHeight, setActiveTimelineHeight] = useState(0)
   const aboutRef = useRef<HTMLElement | null>(null)
+  const skillRowRefs = useRef<Record<number, HTMLDivElement | null>>({})
+  const experienceTimelineRef = useRef<HTMLDivElement | null>(null)
+  const experienceCardRefs = useRef<Record<number, HTMLButtonElement | null>>({})
+  const kirbyIdRef = useRef(1)
+  const kirbyDragRef = useRef<
+    Record<
+      number,
+      {
+        pointerId: number
+        offsetX: number
+        offsetY: number
+        lastX: number
+        lastY: number
+        lastTime: number
+        vx: number
+        vy: number
+      }
+    >
+  >({})
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -467,19 +511,250 @@ function App() {
   }, [showAllExperiences])
 
   useEffect(() => {
+    const activeExpId = hoveredExp
+
+    if (activeExpId === null) {
+      setActiveTimelineHeight(0)
+      return
+    }
+
+    const timelineContainer = experienceTimelineRef.current
+    const activeCard = experienceCardRefs.current[activeExpId]
+
+    if (!timelineContainer || !activeCard) {
+      return
+    }
+
+    const updateActiveHeight = () => {
+      const containerRect = timelineContainer.getBoundingClientRect()
+      const cardRect = activeCard.getBoundingClientRect()
+      const nextHeight = Math.max(cardRect.bottom - containerRect.top, 0)
+      setActiveTimelineHeight(nextHeight)
+    }
+
+    updateActiveHeight()
+    window.addEventListener('resize', updateActiveHeight)
+
+    return () => window.removeEventListener('resize', updateActiveHeight)
+  }, [hoveredExp, showAllExperiences])
+
+  useEffect(() => {
     const handleScroll = () => {
       if (!aboutRef.current) {
         return
       }
 
-      const aboutBottom = aboutRef.current.getBoundingClientRect().bottom
-      setShowStickyHeader(aboutBottom < 0)
+      const rect = aboutRef.current.getBoundingClientRect()
+      // Show when 60% of the about section has scrolled past the top
+      setShowStickyHeader(rect.bottom < rect.height * 0.4)
     }
 
     window.addEventListener('scroll', handleScroll)
 
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    const hasActiveKirby = kirbySprites.some(
+      (sprite) =>
+        sprite.isDragging || Math.abs(sprite.vx) > 0.01 || Math.abs(sprite.vy) > 0.01,
+    )
+
+    if (!hasActiveKirby) {
+      return
+    }
+
+    let animationFrame = 0
+    let lastTime = performance.now()
+    const spriteSize = 80
+    const wallBounce = 0.78
+    const floorFriction = 0.92
+    const airFrictionPerMs = 0.9993
+    const gravity = 0.0022
+
+    const tick = (currentTime: number) => {
+      const deltaMs = Math.min(34, Math.max(currentTime - lastTime, 8))
+      lastTime = currentTime
+
+      setKirbySprites((currentSprites) => {
+        const maxX = Math.max(window.innerWidth - spriteSize, 0)
+        const maxY = Math.max(window.innerHeight - spriteSize, 0)
+
+        return currentSprites.map((sprite) => {
+          if (sprite.isDragging) {
+            return sprite
+          }
+
+          let vx = sprite.vx
+          let vy = sprite.vy + gravity * deltaMs
+          let x = sprite.x + vx * deltaMs
+          let y = sprite.y + vy * deltaMs
+
+          const airFriction = Math.pow(airFrictionPerMs, deltaMs)
+          vx *= airFriction
+          vy *= airFriction
+
+          if (x <= 0) {
+            x = 0
+            vx = Math.abs(vx) * wallBounce
+          } else if (x >= maxX) {
+            x = maxX
+            vx = -Math.abs(vx) * wallBounce
+          }
+
+          if (y <= 0) {
+            y = 0
+            vy = Math.abs(vy) * wallBounce
+          } else if (y >= maxY) {
+            y = maxY
+            vy = -Math.abs(vy) * wallBounce
+            vx *= floorFriction
+
+            if (Math.abs(vy) < 0.05) {
+              vy = 0
+            }
+            if (Math.abs(vx) < 0.01) {
+              vx = 0
+            }
+          }
+
+          return { ...sprite, x, y, vx, vy }
+        })
+      })
+
+      animationFrame = window.requestAnimationFrame(tick)
+    }
+
+    animationFrame = window.requestAnimationFrame(tick)
+
+    return () => window.cancelAnimationFrame(animationFrame)
+  }, [kirbySprites])
+
+  const spawnKirby = () => {
+    if (kirbySprites.length > 0) {
+      return
+    }
+
+    const spriteSize = 80
+    const margin = 16
+    const startX = Math.max(window.innerWidth - spriteSize - margin, margin)
+    const startY = Math.min(120, window.innerHeight - spriteSize - margin)
+
+    const sprite: KirbySprite = {
+      id: kirbyIdRef.current,
+      gifUrl: KIRBY_GIF,
+      x: startX,
+      y: Math.max(startY, margin),
+      vx: 0,
+      vy: 0,
+      isDragging: false,
+    }
+
+    kirbyIdRef.current += 1
+    setKirbySprites((sprites) => [...sprites, sprite])
+  }
+
+  const updateKirbyPosition = (
+    spriteId: number,
+    clientX: number,
+    clientY: number,
+    offsetX: number,
+    offsetY: number,
+  ) => {
+    const spriteSize = 80
+    const maxX = Math.max(window.innerWidth - spriteSize, 0)
+    const maxY = Math.max(window.innerHeight - spriteSize, 0)
+    const nextX = Math.min(Math.max(clientX - offsetX, 0), maxX)
+    const nextY = Math.min(Math.max(clientY - offsetY, 0), maxY)
+
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId ? { ...sprite, x: nextX, y: nextY } : sprite,
+      ),
+    )
+  }
+
+  const handleKirbyPointerDown = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault()
+
+    const rect = event.currentTarget.getBoundingClientRect()
+    kirbyDragRef.current[spriteId] = {
+      pointerId: event.pointerId,
+      offsetX: event.clientX - rect.left,
+      offsetY: event.clientY - rect.top,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      lastTime: performance.now(),
+      vx: 0,
+      vy: 0,
+    }
+
+    event.currentTarget.setPointerCapture(event.pointerId)
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId
+          ? { ...sprite, isDragging: true, vx: 0, vy: 0 }
+          : sprite,
+      ),
+    )
+  }
+
+  const handleKirbyPointerMove = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    const dragState = kirbyDragRef.current[spriteId]
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return
+    }
+
+    const now = performance.now()
+    const dt = Math.max(now - dragState.lastTime, 8)
+    dragState.vx = (event.clientX - dragState.lastX) / dt
+    dragState.vy = (event.clientY - dragState.lastY) / dt
+    dragState.lastX = event.clientX
+    dragState.lastY = event.clientY
+    dragState.lastTime = now
+
+    updateKirbyPosition(
+      spriteId,
+      event.clientX,
+      event.clientY,
+      dragState.offsetX,
+      dragState.offsetY,
+    )
+  }
+
+  const releaseKirby = (
+    spriteId: number,
+    event: React.PointerEvent<HTMLButtonElement>,
+  ) => {
+    const dragState = kirbyDragRef.current[spriteId]
+    if (!dragState || dragState.pointerId !== event.pointerId) {
+      return
+    }
+
+    setKirbySprites((sprites) =>
+      sprites.map((sprite) =>
+        sprite.id === spriteId
+          ? {
+              ...sprite,
+              isDragging: false,
+              vx: dragState.vx * 1.2,
+              vy: dragState.vy * 1.2,
+            }
+          : sprite,
+      ),
+    )
+
+    delete kirbyDragRef.current[spriteId]
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+  }
 
   const visibleCertifications = certificationsByProvider.slice(
     certificationIndex,
@@ -494,13 +769,140 @@ function App() {
     ? contributionsDetailed
     : contributionsDetailed.slice(0, 3)
 
+  useEffect(() => {
+    const chipGap = 6
+    const widthCache = new Map<string, number>()
+
+    const measureChipWidth = (label: string) => {
+      const cached = widthCache.get(label)
+      if (cached !== undefined) {
+        return cached
+      }
+
+      const probe = document.createElement('span')
+      probe.className = experienceSkillChipClassName
+      probe.textContent = label
+      probe.style.position = 'absolute'
+      probe.style.visibility = 'hidden'
+      probe.style.pointerEvents = 'none'
+      probe.style.whiteSpace = 'nowrap'
+      document.body.appendChild(probe)
+      const width = Math.ceil(probe.getBoundingClientRect().width)
+      document.body.removeChild(probe)
+      widthCache.set(label, width)
+
+      return width
+    }
+
+    const calculateVisibleSkillCount = (skills: string[], containerWidth: number) => {
+      if (containerWidth <= 0 || skills.length === 0) {
+        return skills.length
+      }
+
+      const skillWidths = skills.map((skill) => measureChipWidth(skill))
+
+      for (let visibleCount = skills.length; visibleCount >= 0; visibleCount -= 1) {
+        const hiddenCount = skills.length - visibleCount
+        const hiddenBadgeWidth =
+          hiddenCount > 0 ? measureChipWidth(`+${hiddenCount}`) : 0
+
+        let requiredWidth = 0
+
+        for (let index = 0; index < visibleCount; index += 1) {
+          requiredWidth += skillWidths[index]
+        }
+
+        if (visibleCount > 1) {
+          requiredWidth += chipGap * (visibleCount - 1)
+        }
+
+        if (hiddenCount > 0) {
+          requiredWidth += hiddenBadgeWidth
+          if (visibleCount > 0) {
+            requiredWidth += chipGap
+          }
+        }
+
+        if (requiredWidth <= containerWidth) {
+          return visibleCount
+        }
+      }
+
+      return 0
+    }
+
+    const updateVisibleSkillCounts = () => {
+      setVisibleSkillCountByExp((current) => {
+        let hasChanges = false
+        const next: Record<number, number> = { ...current }
+
+        displayedExperiences.forEach((exp) => {
+          const skillRow = skillRowRefs.current[exp.id]
+          const availableWidth = skillRow?.clientWidth ?? 0
+          const fittedSkillCount = calculateVisibleSkillCount(
+            exp.skills,
+            availableWidth,
+          )
+
+          if (next[exp.id] !== fittedSkillCount) {
+            next[exp.id] = fittedSkillCount
+            hasChanges = true
+          }
+        })
+
+        return hasChanges ? next : current
+      })
+    }
+
+    const frame = window.requestAnimationFrame(updateVisibleSkillCounts)
+    const observer = new ResizeObserver(updateVisibleSkillCounts)
+
+    displayedExperiences.forEach((exp) => {
+      const skillRow = skillRowRefs.current[exp.id]
+      if (skillRow) {
+        observer.observe(skillRow)
+      }
+    })
+
+    window.addEventListener('resize', updateVisibleSkillCounts)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('resize', updateVisibleSkillCounts)
+    }
+  }, [showAllExperiences])
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+    <div className="page-bg isolate min-h-screen text-foreground">
+      <div aria-hidden="true" className="page-glow pointer-events-none fixed inset-0 -z-10" />
+
+      {/* Floating Kirby easter egg */}
+      {kirbySprites.map((sprite) => (
+        <button
+          key={sprite.id}
+          type="button"
+          style={{ left: sprite.x, top: sprite.y }}
+          className="fixed z-[200] cursor-grab active:cursor-grabbing"
+          onPointerDown={(event) => handleKirbyPointerDown(sprite.id, event)}
+          onPointerMove={(event) => handleKirbyPointerMove(sprite.id, event)}
+          onPointerUp={(event) => releaseKirby(sprite.id, event)}
+          onPointerCancel={(event) => releaseKirby(sprite.id, event)}
+        >
+          <img
+            src={sprite.gifUrl}
+            alt="Floating Kirby"
+            className="pointer-events-none w-20 select-none"
+            draggable={false}
+          />
+        </button>
+      ))}
+
+      <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-background/75 shadow-[0_8px_32px_rgba(0,0,0,0.40)] backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
           <button
             type="button"
-            className={`flex items-center gap-3 transition-all duration-300 ${
+            className={`group flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-all duration-300 hover:bg-white/5 ${
               showStickyHeader ? 'opacity-100' : 'pointer-events-none opacity-0'
             }`}
             onClick={() => scrollToId('about')}
@@ -508,7 +910,7 @@ function App() {
             <img
               src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
               alt="Gonzalo Candel"
-              className="h-10 w-10 rounded-full border-2 border-primary object-cover"
+              className="h-10 w-10 rounded-full border-2 border-primary object-cover transition-transform duration-200 group-hover:scale-105 group-hover:border-primary/80 group-hover:ring-2 group-hover:ring-primary/30"
             />
             <span className="text-left">
               <span className="block text-sm font-bold text-white">
@@ -518,13 +920,13 @@ function App() {
             </span>
           </button>
 
-          <div className="hidden items-center gap-6 text-sm md:flex">
-            {['about', 'experience', 'projects', 'contributions', 'certifications'].map(
+          <div className="hidden items-center gap-1 text-sm md:flex">
+            {['experience', 'projects', 'contributions', 'certifications'].map(
               (item) => (
                 <button
                   key={item}
                   type="button"
-                  className="capitalize text-foreground transition-colors hover:text-white"
+                  className="relative rounded-md px-3 py-1.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
                   onClick={() => scrollToId(item)}
                 >
                   {item}
@@ -540,201 +942,378 @@ function App() {
       <section
         id="about"
         ref={aboutRef}
-        className="section-glow px-4 pb-20 pt-28 sm:px-6 sm:pt-32"
+        className="section-glow px-4 pb-24 pt-28 sm:px-6 sm:pt-32"
       >
-        <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[320px_1fr] lg:items-start lg:gap-16">
-          <div className="flex flex-col items-center">
-            <div className="mb-6 h-56 w-56 overflow-hidden rounded-full border-4 border-primary shadow-2xl sm:h-64 sm:w-64">
-              <img
-                src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
-                alt="Gonzalo Candel"
-                className="h-full w-full object-cover"
-              />
+        <div className="mx-auto max-w-6xl">
+          <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-start lg:gap-16">
+            {/* Left: photo + name + stats */}
+            <div className="flex flex-col items-center gap-6">
+              {/* Photo frame — click for easter egg */}
+              <button
+                type="button"
+                aria-label="Secret"
+                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary sm:h-64 sm:w-64"
+                onClick={spawnKirby}
+              >
+                <img
+                  src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
+                  alt="Gonzalo Candel"
+                  className="h-full w-full object-cover"
+                />
+              </button>
+
+              {/* Kirby easter egg — click photo to summon */}
+
+              {/* Name + role */}
+              <div className="text-center">
+                <h1 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  Gonzalo Candel
+                </h1>
+                <p className="mt-1.5 text-lg text-primary">
+                  Data Scientist · ML &amp; Optimization
+                </p>
+              </div>
+
+              {/* Quick stats */}
+              <div className="grid w-full grid-cols-3 gap-2">
+                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                  <p className="text-xl font-bold text-white">4+</p>
+                  <p className="mt-0.5 text-[11px] text-slate-400">Yrs Exp.</p>
+                </div>
+                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                  <p className="text-xl font-bold text-white">3</p>
+                  <p className="mt-0.5 text-[11px] text-slate-400">Companies</p>
+                </div>
+                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                  <p className="text-xl font-bold text-white">2</p>
+                  <p className="mt-0.5 text-[11px] text-slate-400">Publications</p>
+                </div>
+              </div>
             </div>
-            <h1 className="text-center text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              Gonzalo Candel
-            </h1>
-            <p className="mt-2 text-center text-xl text-primary sm:text-2xl">
-              Data Scientist | ML & Optimization
-            </p>
-          </div>
 
-          <div className="space-y-6 pt-2">
-            <p className="text-lg leading-relaxed">
-              Data Scientist with experience in forecasting, optimization, and
-              analytics, working across product and business teams to turn data
-              into measurable outcomes.
-            </p>
-            <p className="text-lg leading-relaxed">
-              Skilled in Python, SQL, and ML tooling, with hands-on delivery in
-              dbt/Snowflake pipelines, FastAPI services, and observability
-              systems. I enjoy building robust solutions that improve strategic
-              decision-making.
-            </p>
+            {/* Right: bio card + core stack + actions */}
+            <div className="space-y-6">
+              {/* Bio in glass card */}
+              <div className="rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm">
+                <p className="text-lg leading-relaxed text-slate-200">
+                  Data Scientist with experience in forecasting, optimization, and
+                  analytics, working across product and business teams to turn data
+                  into measurable outcomes.
+                </p>
+                <p className="mt-4 text-lg leading-relaxed text-slate-300">
+                  Skilled in Python, SQL, and ML tooling, with hands-on delivery in
+                  dbt/Snowflake pipelines, FastAPI services, and observability
+                  systems. I enjoy building robust solutions that improve strategic
+                  decision-making.
+                </p>
+              </div>
 
-            <Button
-              size="lg"
-              className="gap-2 bg-primary text-primary-foreground hover:brightness-110"
-              onClick={() => {
-                const link = document.createElement('a')
-                link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
-                link.download = 'CV_Gonzalo.pdf'
-                link.click()
-              }}
-            >
-              <Download className="h-5 w-5" />
-              Download Resume
-            </Button>
+              {/* Core stack chips */}
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+                  Core Stack
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {['Python', 'SQL', 'dbt', 'Snowflake', 'Pandas', 'Scikit-learn', 'FastAPI', 'Docker', 'Tableau'].map(
+                    (skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-sm text-primary/90"
+                      >
+                        {skill}
+                      </span>
+                    ),
+                  )}
+                </div>
+              </div>
 
-            <div className="pt-2">
-              <h2 className="mb-4 text-lg font-semibold text-white">
-                Connect with me
-              </h2>
-              <div className="flex flex-wrap gap-3">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
-                  onClick={() =>
-                    window.open(
-                      'https://www.linkedin.com/in/gonzalo-candel-peir%C3%B3/',
-                      '_blank',
-                    )
-                  }
-                >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5 fill-current"
+              {/* Download resume */}
+              <Button
+                size="lg"
+                className="group gap-2 border border-primary/60 bg-primary text-primary-foreground shadow-[0_0_0_rgba(17,115,212,0)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_28px_rgba(17,115,212,0.38)] hover:ring-2 hover:ring-primary/30 active:translate-y-0"
+                onClick={() => {
+                  const link = document.createElement('a')
+                  link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
+                  link.download = 'CV_Gonzalo.pdf'
+                  link.click()
+                }}
+              >
+                <Download className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5" />
+                Download Resume
+              </Button>
+
+              {/* Connect */}
+              <div>
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+                  Connect
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    onClick={() =>
+                      window.open(
+                        'https://www.linkedin.com/in/gonzalo-candel-peir%C3%B3/',
+                        '_blank',
+                      )
+                    }
                   >
-                    <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.48 1s2.5 1.12 2.5 2.5ZM.5 8h4V23h-4V8Zm7 0h3.83v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V23h-4v-7.02c0-1.67-.03-3.82-2.33-3.82-2.34 0-2.7 1.82-2.7 3.7V23h-4V8Z" />
-                  </svg>
-                  LinkedIn
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
-                  onClick={() =>
-                    window.open('https://github.com/GonxaTroll', '_blank')
-                  }
-                >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 24 24"
-                    className="h-5 w-5 fill-current"
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 fill-current"
+                    >
+                      <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.48 1s2.5 1.12 2.5 2.5ZM.5 8h4V23h-4V8Zm7 0h3.83v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V23h-4v-7.02c0-1.67-.03-3.82-2.33-3.82-2.34 0-2.7 1.82-2.7 3.7V23h-4V8Z" />
+                    </svg>
+                    LinkedIn
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    onClick={() =>
+                      window.open('https://github.com/GonxaTroll', '_blank')
+                    }
                   >
-                    <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.68 0-1.26.45-2.3 1.2-3.11-.12-.3-.52-1.5.11-3.12 0 0 .98-.31 3.2 1.19A11.1 11.1 0 0 1 12 6.1c.98 0 1.97.13 2.89.39 2.22-1.5 3.2-1.2 3.2-1.2.64 1.63.24 2.83.12 3.13.75.81 1.2 1.85 1.2 3.11 0 4.42-2.69 5.38-5.25 5.66.41.35.78 1.04.78 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.2.66.79.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
-                  </svg>
-                  GitHub
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
-                  onClick={() =>
-                    window.open('https://www.kaggle.com/gonxatroll', '_blank')
-                  }
-                >
-                  <span className="text-sm font-bold">K</span>
-                  Kaggle
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
-                  onClick={() => {
-                    window.location.href = 'mailto:gonzalo.canpei@gmail.com'
-                  }}
-                >
-                  <Mail className="h-5 w-5" />
-                  Email
-                </Button>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 fill-current"
+                    >
+                      <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.68 0-1.26.45-2.3 1.2-3.11-.12-.3-.52-1.5.11-3.12 0 0 .98-.31 3.2 1.19A11.1 11.1 0 0 1 12 6.1c.98 0 1.97.13 2.89.39 2.22-1.5 3.2-1.2 3.2-1.2.64 1.63.24 2.83.12 3.13.75.81 1.2 1.85 1.2 3.11 0 4.42-2.69 5.38-5.25 5.66.41.35.78 1.04.78 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.2.66.79.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+                    </svg>
+                    GitHub
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    onClick={() =>
+                      window.open('https://www.kaggle.com/gonxatroll', '_blank')
+                    }
+                  >
+                    <span className="text-sm font-bold">K</span>
+                    Kaggle
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="lg"
+                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    onClick={() => {
+                      window.location.href = 'mailto:gonzalo.canpei@gmail.com'
+                    }}
+                  >
+                    <Mail className="h-5 w-5" />
+                    Email
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="experience" className="px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-4xl">
+      <section id="experience" className="experience-shell px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-5xl">
           <div className="mb-16 text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">
+              Professional Experience
+            </p>
             <h2 className="text-4xl font-bold text-white sm:text-5xl">
-              My Journey
+              Career Timeline
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-xl">
-              An interactive timeline of my professional experience.
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300 sm:text-xl">
+              Key roles where I built production-ready data products,
+              forecasting systems, and decision intelligence.
             </p>
           </div>
 
-          <div className="relative">
-            <div className="timeline-line absolute bottom-0 left-8 top-0 w-px" />
+          <div className="relative" ref={experienceTimelineRef}>
+            <div className="timeline-line absolute bottom-0 left-6 top-0 w-px md:left-1/2 md:-translate-x-1/2" />
+            <div
+              className="timeline-line-active pointer-events-none absolute left-6 w-px md:left-1/2 md:-translate-x-1/2"
+              style={{
+                height: `${activeTimelineHeight}px`,
+                opacity: activeTimelineHeight > 0 ? 1 : 0,
+              }}
+            />
 
-            <div className="space-y-12">
-              {displayedExperiences.map((exp, index) => (
-                <div
-                  key={exp.id}
-                  data-index={index}
-                  className={`timeline-item relative flex cursor-pointer items-start gap-6 pl-20 transition-all duration-700 ${
-                    visibleItems.includes(index)
-                      ? 'translate-x-0 opacity-100'
-                      : '-translate-x-10 opacity-0'
-                  }`}
-                  onMouseEnter={() => setHoveredExp(exp.id)}
-                  onMouseLeave={() => setHoveredExp(null)}
-                  onClick={() => setSelectedExp(exp)}
-                >
+            <div className="space-y-8">
+              {displayedExperiences.map((exp, index) => {
+                const isRight = index % 2 === 1
+                const startYear = getStartYear(exp.period)
+                const previousStartYear =
+                  index > 0
+                    ? getStartYear(displayedExperiences[index - 1].period)
+                    : ''
+                const showYearBadge = Boolean(
+                  startYear && (index === 0 || startYear !== previousStartYear),
+                )
+                const visibleSkillCount =
+                  visibleSkillCountByExp[exp.id] ?? exp.skills.length
+                const hiddenSkillCount = Math.max(
+                  exp.skills.length - visibleSkillCount,
+                  0,
+                )
+
+                return (
                   <div
-                    className="absolute left-2 top-2 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background transition-transform"
-                    style={{
-                      backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
-                      transform:
-                        hoveredExp === exp.id ? 'scale(1.15)' : 'scale(1)',
-                    }}
+                    key={exp.id}
+                    data-index={index}
+                    className={`timeline-item group/exp relative flex pl-16 transition-all duration-700 md:pl-0 ${
+                      isRight ? 'md:justify-end' : 'md:justify-start'
+                    } ${
+                      index > 0 ? 'md:-mt-7' : ''
+                    } ${
+                      hoveredExp === exp.id ? 'z-20' : 'z-10'
+                    } ${
+                      visibleItems.includes(index)
+                        ? 'translate-y-0 opacity-100'
+                        : isRight
+                          ? 'translate-y-4 opacity-0 md:translate-x-10'
+                          : 'translate-y-4 opacity-0 md:-translate-x-10'
+                    }`}
                   >
-                    <Briefcase
-                      className="h-6 w-6"
-                      style={{ color: index === 0 ? '#ffffff' : '#696c73' }}
-                    />
-                  </div>
-
-                  <div className="flex-1 rounded-2xl border border-border/70 bg-card/50 p-5 backdrop-blur-sm">
-                    <h3 className="text-2xl font-bold text-white">
-                      {exp.title}
-                    </h3>
-                    <p className="mt-1">
-                      {exp.company} | {exp.period}
-                    </p>
-
-                    {hoveredExp === exp.id && (
-                      <div className="mt-4 flex flex-wrap gap-2 animate-in fade-in duration-300">
-                        {exp.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="rounded-full bg-primary px-3 py-1 text-sm text-white"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
+                    {showYearBadge && (
+                      <div className="timeline-year-guide absolute left-0 right-0 top-12 hidden md:block" />
                     )}
-                  </div>
-                </div>
-              ))}
-            </div>
+                    {showYearBadge && (
+                      <span
+                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-slate-600/70 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
+                          isRight
+                            ? 'left-1/2 -translate-x-[calc(100%+3.4rem)]'
+                            : 'left-1/2 translate-x-[3.4rem]'
+                        }`}
+                      >
+                        {startYear}
+                      </span>
+                    )}
 
-            {experiences.length > 3 && !showAllExperiences && (
-              <div className="mt-8 flex justify-center">
-                <Button
-                  onClick={() => setShowAllExperiences(true)}
-                  className="gap-2 bg-primary text-white"
-                >
-                  Show All Experiences
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+                    <div
+                      className={`timeline-connector absolute top-12 hidden h-px w-8 md:block ${
+                        isRight ? 'left-1/2 ml-6' : 'right-1/2 mr-6'
+                      }`}
+                      style={{
+                        opacity: hoveredExp === exp.id ? 1 : 0.35,
+                        background:
+                          hoveredExp === exp.id
+                            ? 'linear-gradient(90deg, rgba(120, 193, 255, 0.95), rgba(17, 115, 212, 0.88))'
+                            : undefined,
+                        boxShadow:
+                          hoveredExp === exp.id
+                            ? '0 0 16px rgba(69, 161, 242, 0.72)'
+                            : '0 0 0 rgba(17, 115, 212, 0)',
+                      }}
+                    />
+
+                    <div
+                      className={`absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
+                        hoveredExp === exp.id ? 'scale-110' : 'scale-100'
+                      }`}
+                      style={{
+                        backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
+                      }}
+                    >
+                      <Briefcase
+                        className="h-6 w-6"
+                        style={{ color: index === 0 ? '#ffffff' : '#696c73' }}
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      className="w-full text-left md:w-[calc(50%-2.25rem)]"
+                      ref={(element) => {
+                        experienceCardRefs.current[exp.id] = element
+                      }}
+                      aria-label={`Open details for ${exp.title} at ${exp.company}`}
+                      onMouseEnter={() => setHoveredExp(exp.id)}
+                      onMouseLeave={() => setHoveredExp(null)}
+                      onClick={() => setSelectedExp(exp)}
+                    >
+                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] focus-visible:border-primary/70">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-sm font-semibold text-primary">{exp.company}</p>
+                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                            {exp.period}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-3 text-2xl font-bold text-white">
+                          {exp.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                          {exp.description}
+                        </p>
+
+                        <div className="mt-4 flex items-center justify-between gap-3">
+                          <div
+                            ref={(element) => {
+                              skillRowRefs.current[exp.id] = element
+                            }}
+                            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-hidden"
+                          >
+                            {exp.skills.slice(0, visibleSkillCount).map((skill) => (
+                              <span
+                                key={skill}
+                                className={experienceSkillChipClassName}
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                            {hiddenSkillCount > 0 && (
+                              <span className={experienceSkillChipClassName}>
+                                +{hiddenSkillCount}
+                              </span>
+                            )}
+                          </div>
+
+                          <span
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary transition-all duration-300 group-hover/exp:border-primary/70 group-hover/exp:bg-primary/25"
+                            style={{
+                              borderColor:
+                                hoveredExp === exp.id
+                                  ? 'rgba(17, 115, 212, 0.9)'
+                                  : undefined,
+                              backgroundColor:
+                                hoveredExp === exp.id
+                                  ? 'rgba(17, 115, 212, 0.28)'
+                                  : undefined,
+                            }}
+                            aria-hidden="true"
+                          >
+                            <ChevronRight
+                              className="h-4 w-4 transition-transform duration-300"
+                              style={{
+                                transform:
+                                  hoveredExp === exp.id
+                                    ? 'translateX(3px)'
+                                    : 'translateX(0)',
+                              }}
+                            />
+                          </span>
+                          <span className="sr-only">View details</span>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
+
+          {experiences.length > 3 && !showAllExperiences && (
+            <div className="mt-8 flex justify-center">
+              <Button
+                onClick={() => setShowAllExperiences(true)}
+                className="gap-2 bg-primary text-white"
+              >
+                Show All Experiences
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -1010,14 +1589,14 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="max-w-2xl border-border bg-card"
+          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">
               {selectedExp?.title}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-slate-300">
               {selectedExp?.company} | {selectedExp?.period}
             </DialogDescription>
           </DialogHeader>
@@ -1030,7 +1609,7 @@ function App() {
                 {selectedExp?.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full bg-secondary px-3 py-1 text-sm text-white"
+                    className="rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
                   >
                     {skill}
                   </span>
