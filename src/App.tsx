@@ -417,6 +417,14 @@ function scrollToId(id: string, onDone?: () => void) {
   }
 }
 
+function resolveAssetUrl(path: string) {
+  if (/^(?:[a-z]+:)?\/\//i.test(path) || path.startsWith('mailto:')) {
+    return path
+  }
+
+  return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
+}
+
 function App() {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
@@ -498,7 +506,7 @@ function App() {
             onClick={() => scrollToId('about')}
           >
             <img
-              src="/images/design-mode/about_me_screen.png"
+              src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
               alt="Gonzalo Candel"
               className="h-10 w-10 rounded-full border-2 border-primary object-cover"
             />
@@ -538,7 +546,7 @@ function App() {
           <div className="flex flex-col items-center">
             <div className="mb-6 h-56 w-56 overflow-hidden rounded-full border-4 border-primary shadow-2xl sm:h-64 sm:w-64">
               <img
-                src="/images/design-mode/about_me_screen.png"
+                src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
                 alt="Gonzalo Candel"
                 className="h-full w-full object-cover"
               />
@@ -569,7 +577,7 @@ function App() {
               className="gap-2 bg-primary text-primary-foreground hover:brightness-110"
               onClick={() => {
                 const link = document.createElement('a')
-                link.href = '/CV_Gonzalo.pdf'
+                link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
                 link.download = 'CV_Gonzalo.pdf'
                 link.click()
               }}
@@ -752,7 +760,7 @@ function App() {
                 onClick={() => window.open(project.url, '_blank')}
               >
                 <img
-                  src={project.image}
+                  src={resolveAssetUrl(project.image)}
                   alt={project.title}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -821,7 +829,7 @@ function App() {
                 onClick={() => setSelectedContribution(contribution)}
               >
                 <img
-                  src={contribution.image}
+                  src={resolveAssetUrl(contribution.image)}
                   alt={contribution.title}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
@@ -920,7 +928,7 @@ function App() {
                   <div className="mb-3 flex flex-col items-center">
                     <div className="mb-2 flex h-20 w-20 items-center justify-center">
                       <img
-                        src={provider.logo}
+                        src={resolveAssetUrl(provider.logo)}
                         alt={provider.provider}
                         className="max-h-20 max-w-20 object-contain"
                       />
@@ -1095,7 +1103,7 @@ function App() {
               {selectedProviderCerts && (
                 <>
                   <img
-                    src={selectedProviderCerts.logo}
+                    src={resolveAssetUrl(selectedProviderCerts.logo)}
                     alt={selectedProviderCerts.provider}
                     className="h-10 w-10 object-contain"
                   />
