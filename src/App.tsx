@@ -425,6 +425,14 @@ function resolveAssetUrl(path: string) {
   return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`
 }
 
+function getStartYear(period: string) {
+  const yearMatch = period.match(/\b(19|20)\d{2}\b/)
+  return yearMatch?.[0] ?? ''
+}
+
+const experienceSkillChipClassName =
+  'shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
+
 function App() {
   const [hoveredExp, setHoveredExp] = useState<number | null>(null)
   const [selectedExp, setSelectedExp] = useState<Experience | null>(null)
@@ -442,7 +450,14 @@ function App() {
   const [showAllContributions, setShowAllContributions] = useState(false)
   const [selectedProviderCerts, setSelectedProviderCerts] =
     useState<CertificationProvider | null>(null)
+  const [visibleSkillCountByExp, setVisibleSkillCountByExp] = useState<
+    Record<number, number>
+  >({})
+  const [activeTimelineHeight, setActiveTimelineHeight] = useState(0)
   const aboutRef = useRef<HTMLElement | null>(null)
+  const skillRowRefs = useRef<Record<number, HTMLDivElement | null>>({})
+  const experienceTimelineRef = useRef<HTMLDivElement | null>(null)
+  const experienceCardRefs = useRef<Record<number, HTMLButtonElement | null>>({})
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -465,6 +480,34 @@ function App() {
 
     return () => observer.disconnect()
   }, [showAllExperiences])
+
+  useEffect(() => {
+    const activeExpId = hoveredExp
+
+    if (activeExpId === null) {
+      setActiveTimelineHeight(0)
+      return
+    }
+
+    const timelineContainer = experienceTimelineRef.current
+    const activeCard = experienceCardRefs.current[activeExpId]
+
+    if (!timelineContainer || !activeCard) {
+      return
+    }
+
+    const updateActiveHeight = () => {
+      const containerRect = timelineContainer.getBoundingClientRect()
+      const cardRect = activeCard.getBoundingClientRect()
+      const nextHeight = Math.max(cardRect.bottom - containerRect.top, 0)
+      setActiveTimelineHeight(nextHeight)
+    }
+
+    updateActiveHeight()
+    window.addEventListener('resize', updateActiveHeight)
+
+    return () => window.removeEventListener('resize', updateActiveHeight)
+  }, [hoveredExp, showAllExperiences])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -493,6 +536,110 @@ function App() {
   const displayedContributions = showAllContributions
     ? contributionsDetailed
     : contributionsDetailed.slice(0, 3)
+
+  useEffect(() => {
+    const chipGap = 6
+    const widthCache = new Map<string, number>()
+
+    const measureChipWidth = (label: string) => {
+      const cached = widthCache.get(label)
+      if (cached !== undefined) {
+        return cached
+      }
+
+      const probe = document.createElement('span')
+      probe.className = experienceSkillChipClassName
+      probe.textContent = label
+      probe.style.position = 'absolute'
+      probe.style.visibility = 'hidden'
+      probe.style.pointerEvents = 'none'
+      probe.style.whiteSpace = 'nowrap'
+      document.body.appendChild(probe)
+      const width = Math.ceil(probe.getBoundingClientRect().width)
+      document.body.removeChild(probe)
+      widthCache.set(label, width)
+
+      return width
+    }
+
+    const calculateVisibleSkillCount = (skills: string[], containerWidth: number) => {
+      if (containerWidth <= 0 || skills.length === 0) {
+        return skills.length
+      }
+
+      const skillWidths = skills.map((skill) => measureChipWidth(skill))
+
+      for (let visibleCount = skills.length; visibleCount >= 0; visibleCount -= 1) {
+        const hiddenCount = skills.length - visibleCount
+        const hiddenBadgeWidth =
+          hiddenCount > 0 ? measureChipWidth(`+${hiddenCount}`) : 0
+
+        let requiredWidth = 0
+
+        for (let index = 0; index < visibleCount; index += 1) {
+          requiredWidth += skillWidths[index]
+        }
+
+        if (visibleCount > 1) {
+          requiredWidth += chipGap * (visibleCount - 1)
+        }
+
+        if (hiddenCount > 0) {
+          requiredWidth += hiddenBadgeWidth
+          if (visibleCount > 0) {
+            requiredWidth += chipGap
+          }
+        }
+
+        if (requiredWidth <= containerWidth) {
+          return visibleCount
+        }
+      }
+
+      return 0
+    }
+
+    const updateVisibleSkillCounts = () => {
+      setVisibleSkillCountByExp((current) => {
+        let hasChanges = false
+        const next: Record<number, number> = { ...current }
+
+        displayedExperiences.forEach((exp) => {
+          const skillRow = skillRowRefs.current[exp.id]
+          const availableWidth = skillRow?.clientWidth ?? 0
+          const fittedSkillCount = calculateVisibleSkillCount(
+            exp.skills,
+            availableWidth,
+          )
+
+          if (next[exp.id] !== fittedSkillCount) {
+            next[exp.id] = fittedSkillCount
+            hasChanges = true
+          }
+        })
+
+        return hasChanges ? next : current
+      })
+    }
+
+    const frame = window.requestAnimationFrame(updateVisibleSkillCounts)
+    const observer = new ResizeObserver(updateVisibleSkillCounts)
+
+    displayedExperiences.forEach((exp) => {
+      const skillRow = skillRowRefs.current[exp.id]
+      if (skillRow) {
+        observer.observe(skillRow)
+      }
+    })
+
+    window.addEventListener('resize', updateVisibleSkillCounts)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      observer.disconnect()
+      window.removeEventListener('resize', updateVisibleSkillCounts)
+    }
+  }, [showAllExperiences])
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -656,112 +803,206 @@ function App() {
         </div>
       </section>
 
-      <section id="experience" className="px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-4xl">
+      <section id="experience" className="experience-shell px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-5xl">
           <div className="mb-16 text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">
+              Professional Experience
+            </p>
             <h2 className="text-4xl font-bold text-white sm:text-5xl">
-              My Journey
+              Career Timeline
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-xl">
-              An interactive timeline of my professional experience.
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300 sm:text-xl">
+              Key roles where I built production-ready data products,
+              forecasting systems, and decision intelligence.
             </p>
           </div>
 
-          <div className="relative">
-            <div className="timeline-line absolute bottom-0 left-8 top-0 w-px" />
+          <div className="relative" ref={experienceTimelineRef}>
+            <div className="timeline-line absolute bottom-0 left-6 top-0 w-px md:left-1/2 md:-translate-x-1/2" />
+            <div
+              className="timeline-line-active pointer-events-none absolute left-6 w-px md:left-1/2 md:-translate-x-1/2"
+              style={{
+                height: `${activeTimelineHeight}px`,
+                opacity: activeTimelineHeight > 0 ? 1 : 0,
+              }}
+            />
 
-            <div className="space-y-12">
-              {displayedExperiences.map((exp, index) => (
-                <button
-                  type="button"
-                  key={exp.id}
-                  data-index={index}
-                  className={`timeline-item relative flex w-full cursor-pointer items-start gap-6 pl-20 text-left transition-all duration-700 ${
-                    visibleItems.includes(index)
-                      ? 'translate-x-0 opacity-100'
-                      : '-translate-x-10 opacity-0'
-                  }`}
-                  aria-label={`Open details for ${exp.title} at ${exp.company}`}
-                  onMouseEnter={() => setHoveredExp(exp.id)}
-                  onMouseLeave={() => setHoveredExp(null)}
-                  onClick={() => setSelectedExp(exp)}
-                >
+            <div className="space-y-8">
+              {displayedExperiences.map((exp, index) => {
+                const isRight = index % 2 === 1
+                const startYear = getStartYear(exp.period)
+                const previousStartYear =
+                  index > 0
+                    ? getStartYear(displayedExperiences[index - 1].period)
+                    : ''
+                const showYearBadge = Boolean(
+                  startYear && (index === 0 || startYear !== previousStartYear),
+                )
+                const visibleSkillCount =
+                  visibleSkillCountByExp[exp.id] ?? exp.skills.length
+                const hiddenSkillCount = Math.max(
+                  exp.skills.length - visibleSkillCount,
+                  0,
+                )
+
+                return (
                   <div
-                    className="absolute left-2 top-2 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background transition-transform"
-                    style={{
-                      backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
-                      transform:
-                        hoveredExp === exp.id ? 'scale(1.15)' : 'scale(1)',
-                    }}
+                    key={exp.id}
+                    data-index={index}
+                    className={`timeline-item group/exp relative flex pl-16 transition-all duration-700 md:pl-0 ${
+                      isRight ? 'md:justify-end' : 'md:justify-start'
+                    } ${
+                      index > 0 ? 'md:-mt-7' : ''
+                    } ${
+                      hoveredExp === exp.id ? 'z-20' : 'z-10'
+                    } ${
+                      visibleItems.includes(index)
+                        ? 'translate-y-0 opacity-100'
+                        : isRight
+                          ? 'translate-y-4 opacity-0 md:translate-x-10'
+                          : 'translate-y-4 opacity-0 md:-translate-x-10'
+                    }`}
                   >
-                    <Briefcase
-                      className="h-6 w-6"
-                      style={{ color: index === 0 ? '#ffffff' : '#696c73' }}
-                    />
-                  </div>
-
-                  <div className="relative flex-1 rounded-2xl border border-border/70 bg-card/50 p-5 backdrop-blur-sm transition-colors duration-300 hover:border-primary/70 focus-visible:border-primary/70">
-                    <h3 className="text-2xl font-bold text-white">
-                      {exp.title}
-                    </h3>
-                    <p className="mt-1">
-                      {exp.company} | {exp.period}
-                    </p>
+                    {showYearBadge && (
+                      <div className="timeline-year-guide absolute left-0 right-0 top-12 hidden md:block" />
+                    )}
+                    {showYearBadge && (
+                      <span
+                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-slate-600/70 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
+                          isRight
+                            ? 'left-1/2 -translate-x-[calc(100%+3.4rem)]'
+                            : 'left-1/2 translate-x-[3.4rem]'
+                        }`}
+                      >
+                        {startYear}
+                      </span>
+                    )}
 
                     <div
-                      className="pointer-events-none absolute bottom-11 right-3 flex max-w-[70%] flex-wrap justify-end gap-1.5 transition-all duration-300"
+                      className={`timeline-connector absolute top-12 hidden h-px w-8 md:block ${
+                        isRight ? 'left-1/2 ml-6' : 'right-1/2 mr-6'
+                      }`}
                       style={{
-                        opacity: hoveredExp === exp.id ? 1 : 0,
-                        transform:
+                        opacity: hoveredExp === exp.id ? 1 : 0.35,
+                        background:
                           hoveredExp === exp.id
-                            ? 'translateY(0)'
-                            : 'translateY(6px)',
+                            ? 'linear-gradient(90deg, rgba(120, 193, 255, 0.95), rgba(17, 115, 212, 0.88))'
+                            : undefined,
+                        boxShadow:
+                          hoveredExp === exp.id
+                            ? '0 0 16px rgba(69, 161, 242, 0.72)'
+                            : '0 0 0 rgba(17, 115, 212, 0)',
+                      }}
+                    />
+
+                    <div
+                      className={`absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
+                        hoveredExp === exp.id ? 'scale-110' : 'scale-100'
+                      }`}
+                      style={{
+                        backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
                       }}
                     >
-                      {exp.skills.slice(0, 3).map((skill) => (
-                        <span
-                          key={skill}
-                          className="rounded-full border border-primary/50 bg-primary/20 px-2 py-1 text-xs text-white"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                      {exp.skills.length > 3 && (
-                        <span className="rounded-full border border-primary/50 bg-primary/20 px-2 py-1 text-xs text-white">
-                          +{exp.skills.length - 3}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-end gap-1 text-xs font-medium text-primary/90">
-                      <span>Click to view details</span>
-                      <ChevronRight
-                        className="h-4 w-4 transition-transform duration-300"
-                        style={{
-                          transform:
-                            hoveredExp === exp.id
-                              ? 'translateX(3px)'
-                              : 'translateX(0)',
-                        }}
+                      <Briefcase
+                        className="h-6 w-6"
+                        style={{ color: index === 0 ? '#ffffff' : '#696c73' }}
                       />
                     </div>
-                  </div>
-                </button>
-              ))}
-            </div>
 
-            {experiences.length > 3 && !showAllExperiences && (
-              <div className="mt-8 flex justify-center">
-                <Button
-                  onClick={() => setShowAllExperiences(true)}
-                  className="gap-2 bg-primary text-white"
-                >
-                  Show All Experiences
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+                    <button
+                      type="button"
+                      className="w-full text-left md:w-[calc(50%-2.25rem)]"
+                      ref={(element) => {
+                        experienceCardRefs.current[exp.id] = element
+                      }}
+                      aria-label={`Open details for ${exp.title} at ${exp.company}`}
+                      onMouseEnter={() => setHoveredExp(exp.id)}
+                      onMouseLeave={() => setHoveredExp(null)}
+                      onClick={() => setSelectedExp(exp)}
+                    >
+                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] focus-visible:border-primary/70">
+                        <div className="flex items-start justify-between gap-3">
+                          <p className="text-sm font-semibold text-primary">{exp.company}</p>
+                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                            {exp.period}
+                          </span>
+                        </div>
+
+                        <h3 className="mt-3 text-2xl font-bold text-white">
+                          {exp.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                          {exp.description}
+                        </p>
+
+                        <div className="mt-4 flex items-center justify-between gap-3">
+                          <div
+                            ref={(element) => {
+                              skillRowRefs.current[exp.id] = element
+                            }}
+                            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-hidden"
+                          >
+                            {exp.skills.slice(0, visibleSkillCount).map((skill) => (
+                              <span
+                                key={skill}
+                                className={experienceSkillChipClassName}
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                            {hiddenSkillCount > 0 && (
+                              <span className={experienceSkillChipClassName}>
+                                +{hiddenSkillCount}
+                              </span>
+                            )}
+                          </div>
+
+                          <span
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary transition-all duration-300 group-hover/exp:border-primary/70 group-hover/exp:bg-primary/25"
+                            style={{
+                              borderColor:
+                                hoveredExp === exp.id
+                                  ? 'rgba(17, 115, 212, 0.9)'
+                                  : undefined,
+                              backgroundColor:
+                                hoveredExp === exp.id
+                                  ? 'rgba(17, 115, 212, 0.28)'
+                                  : undefined,
+                            }}
+                            aria-hidden="true"
+                          >
+                            <ChevronRight
+                              className="h-4 w-4 transition-transform duration-300"
+                              style={{
+                                transform:
+                                  hoveredExp === exp.id
+                                    ? 'translateX(3px)'
+                                    : 'translateX(0)',
+                              }}
+                            />
+                          </span>
+                          <span className="sr-only">View details</span>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
+
+          {experiences.length > 3 && !showAllExperiences && (
+            <div className="mt-8 flex justify-center">
+              <Button
+                onClick={() => setShowAllExperiences(true)}
+                className="gap-2 bg-primary text-white"
+              >
+                Show All Experiences
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -1037,14 +1278,14 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="max-w-2xl border-border bg-card"
+          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">
               {selectedExp?.title}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-slate-300">
               {selectedExp?.company} | {selectedExp?.period}
             </DialogDescription>
           </DialogHeader>
@@ -1057,7 +1298,7 @@ function App() {
                 {selectedExp?.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full bg-secondary px-3 py-1 text-sm text-white"
+                    className="rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
                   >
                     {skill}
                   </span>

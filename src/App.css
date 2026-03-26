@@ -1,9 +1,37 @@
 .timeline-line {
-  background: linear-gradient(180deg, rgba(17, 115, 212, 0.35), rgba(30, 42, 58, 1));
+  background: linear-gradient(180deg, rgba(17, 115, 212, 0.85), rgba(17, 115, 212, 0.35) 35%, rgba(84, 101, 123, 0.45));
+  box-shadow: 0 0 20px rgba(17, 115, 212, 0.22);
+}
+
+.timeline-line-active {
+  top: 0;
+  background: linear-gradient(180deg, rgba(120, 193, 255, 0.95), rgba(17, 115, 212, 0.9));
+  box-shadow: 0 0 22px rgba(69, 161, 242, 0.75);
+  transition: height 260ms ease, opacity 220ms ease;
 }
 
 .section-glow {
   background:
     radial-gradient(circle at top, rgba(17, 115, 212, 0.18), transparent 45%),
     linear-gradient(180deg, rgba(26, 35, 50, 0.7), rgba(16, 25, 34, 0));
+}
+
+.experience-shell {
+  background:
+    radial-gradient(80% 55% at 50% 0%, rgba(17, 115, 212, 0.14), transparent 68%),
+    linear-gradient(180deg, rgba(16, 25, 34, 0.28), rgba(16, 25, 34, 0));
+}
+
+.timeline-connector {
+  background: linear-gradient(90deg, rgba(17, 115, 212, 0.35), rgba(150, 167, 189, 0.2));
+}
+
+.timeline-year-guide {
+  border-top: 1px dashed rgba(120, 140, 165, 0.28);
+}
+
+@media (min-width: 768px) {
+  .experience-card {
+    min-height: 11rem;
+  }
 }
