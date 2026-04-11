@@ -53,6 +53,23 @@ type Contribution = {
   }[]
 }
 
+type Competition = {
+  id: number
+  name: string
+  date: string
+  rank: number | null
+  totalParticipants: number | null
+  description: string
+  approach: string[]
+  url: string
+  status: 'practice' | 'unfinished' | 'participated' | 'ranked'
+}
+
+type CompetitionCategoryGroup = {
+  name: string
+  competitions: Competition[]
+}
+
 type CertificationProvider = {
   provider: string
   logo: string
@@ -123,70 +140,48 @@ const experiences: Experience[] = [
 
 const projects: Project[] = [
   {
-    id: 1,
-    title: 'Customer Segmentation',
+    id: 7,
+    title: 'Fashion Story Optimizer',
     shortDesc:
-      'Analyzed customer data to identify distinct segments for tailored marketing strategies.',
+      'Optimization approach applied to fashion narrative sequencing and story generation.',
     fullDesc:
-      'Utilized K-means clustering and RFM analysis to segment customers into distinct groups, enabling personalized marketing campaigns that increased conversion rates by 35%.',
-    image: '/data-dashboard.png',
-    url: 'https://github.com/sophiachen/customer-segmentation',
-    tags: ['Python', 'Scikit-learn', 'Pandas'],
-  },
-  {
-    id: 2,
-    title: 'Sales Forecasting',
-    shortDesc:
-      'Developed a model to predict future sales, improving inventory management.',
-    fullDesc:
-      'Built ARIMA and LSTM models to forecast sales with 92% accuracy, reducing inventory costs by 20% and preventing stockouts during peak seasons.',
-    image: '/sales-forecasting-chart-with-trend-lines.jpg',
-    url: 'https://github.com/sophiachen/sales-forecasting',
-    tags: ['Time Series', 'TensorFlow', 'Prophet'],
-  },
-  {
-    id: 3,
-    title: 'Sentiment Analysis',
-    shortDesc:
-      'Gauged public opinion from social media data to inform product development.',
-    fullDesc:
-      'Implemented NLP techniques using BERT to analyze 500K+ social media posts, providing actionable insights that shaped product roadmap decisions.',
-    image: '/sentiment-analysis-visualization.png',
-    url: 'https://github.com/sophiachen/sentiment-analysis',
-    tags: ['NLP', 'BERT', 'PyTorch'],
-  },
-  {
-    id: 4,
-    title: 'Fraud Detection',
-    shortDesc:
-      'Built a system to identify and prevent fraudulent financial transactions.',
-    fullDesc:
-      'Developed an ensemble model combining Random Forest and XGBoost that detected fraudulent transactions with 98% precision, saving the company $2M annually.',
+      'Explores constrained optimization methods to sequence and generate coherent fashion narratives — combining creative AI with structured decision-making. Part of the 2026 weekly DS learning log.',
     image: '/coffee-cup-on-desk-workspace.jpg',
-    url: 'https://github.com/sophiachen/fraud-detection',
-    tags: ['XGBoost', 'Anomaly Detection', 'SQL'],
+    url: 'https://github.com/GonxaTroll/fashion-story-optimizer',
+    tags: ['Python', 'Optimization', 'NLP'],
   },
   {
-    id: 5,
-    title: 'Healthcare Data Analysis',
+    id: 9,
+    title: 'DS Log 2026',
     shortDesc:
-      'Analyzed healthcare data to identify factors influencing patient outcomes.',
+      'Weekly learning log tracking data science and algorithms work throughout 2026.',
     fullDesc:
-      'Performed statistical analysis on 100K+ patient records to identify key factors affecting recovery times, leading to improved treatment protocols.',
-    image: '/healthcare-data-visualization.png',
-    url: 'https://github.com/sophiachen/healthcare-analysis',
-    tags: ['R', 'Statistical Modeling', 'Tableau'],
+      'A structured weekly repository covering path-finding, dimensionality reduction, optimization, and other topics — each week\'s folder contains notebooks, code, and write-ups documenting hands-on experimentation.',
+    image: '/laptop-with-code.png',
+    url: 'https://github.com/GonxaTroll/ds-log-2026',
+    tags: ['Python', 'Algorithms', 'ML', 'Jupyter'],
   },
   {
-    id: 6,
-    title: 'Recommendation System',
+    id: 10,
+    title: 'Dimensionality Reduction Utils',
     shortDesc:
-      'Designed a product recommendation system for an e-commerce platform.',
+      'Python package for PCA analysis, outlier detection, and high-dimensional data visualization.',
     fullDesc:
-      'Created a collaborative filtering system that increased average order value by 28% and improved user engagement metrics across the platform.',
-    image: '/product-recommendation-system.jpg',
-    url: 'https://github.com/sophiachen/recommendation-system',
-    tags: ['Collaborative Filtering', 'Spark', 'AWS'],
+      'A reusable Python library for dimensionality reduction workflows: PCA with variance/eigenvalue diagnostics, Hotelling\'s T² and SPE (Q-statistic) outlier detection, and publication-quality loading and score plots. Tested with pytest, MIT licensed.',
+    image: '/data-dashboard.png',
+    url: 'https://github.com/GonxaTroll/dimensionality-reduction',
+    tags: ['Python', 'PCA', 'NumPy', 'Statistics'],
+  },
+  {
+    id: 11,
+    title: 'Team Formation Optimization',
+    shortDesc:
+      'Exact models and genetic algorithms for automatic team formation — bachelor\'s thesis code.',
+    fullDesc:
+      'Two complementary approaches to team formation: exact mathematical programming with ORTools and a genetic algorithm metaheuristic. The research from this codebase led to publications at HAIS 2023 and in Neurocomputing.',
+    image: '/sales-forecasting-chart-with-trend-lines.jpg',
+    url: 'https://github.com/GonxaTroll/Exact-models-and-metaheuristics-for-team-formation-TFG_Code',
+    tags: ['Python', 'Optimization', 'Genetic Algorithms', 'ORTools'],
   },
 ]
 
@@ -217,148 +212,82 @@ const contributionsDetailed: Contribution[] = [
     ],
   },
   {
-    id: 2,
-    title: 'Monitoring and Reliability',
-    shortDesc:
-      'Designed centralized observability for production data projects.',
-    fullDesc:
-      'Implemented end-to-end monitoring infrastructure with Grafana, Prometheus, and Loki to speed up issue detection and improve system reliability.',
-    image: '/community-building-icon.jpg',
-    url: 'https://github.com/GonxaTroll',
-    tags: ['Grafana', 'Prometheus', 'Loki', 'Observability'],
-    subItems: [
-      {
-        name: 'Centralized Logging and Metrics',
-        description:
-          'Connected logs and metrics from four projects into a shared monitoring stack.',
-        url: 'https://github.com/GonxaTroll',
-      },
-      {
-        name: 'Operational Dashboards',
-        description:
-          'Created dashboards and alerts to shorten time-to-detection for production issues.',
-        url: 'https://github.com/GonxaTroll',
-      },
-    ],
-  },
-  {
-    id: 3,
-    title: 'Data Products and Automation',
-    shortDesc:
-      'Delivered practical tooling that reduced manual effort and supported commercial teams.',
-    fullDesc:
-      'Built internal applications, APIs, and automation tools that improved decision-making and removed repetitive operations in data workflows.',
-    image: '/plant-and-open-book.jpg',
-    url: 'https://github.com/GonxaTroll',
-    tags: ['FastAPI', 'MySQL', 'Optimization', 'Automation'],
-    subItems: [
-      {
-        name: 'Task Automation Tool',
-        description:
-          'Optimization-based workflow automation that saved up to 8 hours per week.',
-        url: 'https://github.com/GonxaTroll',
-      },
-      {
-        name: 'Customer-facing Internal Apps',
-        description:
-          'Implemented backend and data layer for applications used by 20+ retail professionals.',
-        url: 'https://github.com/GonxaTroll',
-      },
-    ],
-  },
-  {
-    id: 4,
-    title: 'Technical Blog Posts',
-    shortDesc:
-      'Published articles on data science topics, sharing insights and tutorials.',
-    fullDesc:
-      'Authored 50+ technical articles on Medium and personal blog, reaching 100K+ readers monthly with tutorials on ML algorithms and best practices.',
-    image: '/blog-post-document.jpg',
-    url: 'https://medium.com/@sophiachen',
-    tags: ['Technical Writing', 'Education', 'Content Creation'],
-    subItems: [
-      {
-        name: 'Understanding Transformer Architecture',
-        description:
-          'Deep dive into attention mechanisms and transformer models',
-        url: 'https://medium.com/@sophiachen/transformers',
-      },
-      {
-        name: 'MLOps Best Practices',
-        description:
-          'Guide to deploying and monitoring ML models in production',
-        url: 'https://medium.com/@sophiachen/mlops',
-      },
-      {
-        name: 'Data Visualization with Python',
-        description:
-          'Comprehensive tutorial on creating impactful visualizations',
-        url: 'https://medium.com/@sophiachen/dataviz',
-      },
-    ],
-  },
-  {
     id: 5,
     title: 'Data Science Competitions',
     shortDesc:
-      'Participated in data science competitions, achieving top rankings in several challenges.',
+      'Kaggle challenges spanning forecasting, credit risk, and combinatorial optimization.',
     fullDesc:
-      'Kaggle Competitions Master with 3 gold medals and 5 silver medals. Ranked in top 1% globally with expertise in computer vision and NLP challenges.',
+      'Five Kaggle competitions covering time series forecasting, credit risk modeling, and optimization problems — from a university practice run with Titanic to a custom hybrid genetic algorithm for the Santa tree packing challenge.',
     image: '/data-science-competition.jpg',
-    url: 'https://www.kaggle.com/sophiachen',
-    tags: ['Kaggle', 'Competitions', 'Problem Solving'],
-    subItems: [
-      {
-        name: 'Image Classification Challenge - 1st Place',
-        description:
-          'Won gold medal with 98.5% accuracy on medical image classification',
-        url: 'https://www.kaggle.com/competitions/image-classification',
-      },
-      {
-        name: 'NLP Sentiment Analysis - 2nd Place',
-        description: 'Silver medal for sentiment analysis on social media data',
-        url: 'https://www.kaggle.com/competitions/sentiment-analysis',
-      },
-      {
-        name: 'Time Series Forecasting - 1st Place',
-        description: 'Gold medal for predicting sales across multiple stores',
-        url: 'https://www.kaggle.com/competitions/time-series',
-      },
-      {
-        name: 'Computer Vision Object Detection - 3rd Place',
-        description:
-          'Bronze medal for detecting objects in autonomous driving scenarios',
-        url: 'https://www.kaggle.com/competitions/object-detection',
-      },
-    ],
+    url: 'https://www.kaggle.com/gonxatroll',
+    tags: ['Kaggle', 'Forecasting', 'Optimization', 'ML'],
+    subItems: [],
   },
+]
+
+const competitionCategories: CompetitionCategoryGroup[] = [
   {
-    id: 6,
-    title: 'Workshop Facilitation',
-    shortDesc:
-      'Designed and led workshops on advanced data visualization techniques for professionals.',
-    fullDesc:
-      'Conducted 15+ workshops for Fortune 500 companies on data visualization, storytelling with data, and dashboard design, training 500+ professionals.',
-    image: '/workshop-presentation.png',
-    url: 'https://www.sophiachen.com/workshops',
-    tags: ['Training', 'Data Visualization', 'Tableau'],
-    subItems: [
+    name: 'Kaggle',
+    competitions: [
       {
-        name: 'Data Storytelling Workshop',
-        description: '2-day workshop on creating compelling data narratives',
-        url: 'https://www.sophiachen.com/workshops/storytelling',
+        id: 5,
+        name: 'Santa — Tree Packing',
+        date: 'Nov 2025',
+        rank: null,
+        totalParticipants: null,
+        description:
+          'Optimization challenge: pack Christmas trees into containers as efficiently as possible. Implemented a hybrid genetic algorithm and simulated annealing approach.',
+        approach: ['Genetic Algorithm', 'Simulated Annealing', 'Optimization'],
+        url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202511_santa_tree_packing',
+        status: 'participated',
       },
       {
-        name: 'Advanced Tableau Training',
+        id: 4,
+        name: 'Forecasting Sticker Sales',
+        date: 'Jan 2025',
+        rank: null,
+        totalParticipants: null,
         description:
-          'Hands-on training for creating interactive dashboards',
-        url: 'https://www.sophiachen.com/workshops/tableau',
+          'Playground competition forecasting sticker sales across countries and product lines. Includes EDA and AutoGluon modeling — work left unfinished.',
+        approach: ['AutoGluon', 'EDA', 'Time Series'],
+        url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202501_forecasting_sticker_sales_plg',
+        status: 'unfinished',
       },
       {
-        name: 'Python for Data Visualization',
+        id: 3,
+        name: 'Rohlik Orders Forecasting',
+        date: 'Jun 2024',
+        rank: 877,
+        totalParticipants: 1077,
         description:
-          'Workshop covering matplotlib, seaborn, and plotly',
-        url: 'https://www.sophiachen.com/workshops/python-viz',
+          'Time series forecasting challenge for grocery delivery order volumes at Rohlik. Made one submission using AutoGluon — limited time investment.',
+        approach: ['AutoGluon', 'Time Series', 'Forecasting'],
+        url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202406_rohlik_orders_forecasting',
+        status: 'ranked',
+      },
+      {
+        id: 2,
+        name: 'Home Credit — Credit Risk Model Stability',
+        date: 'Feb 2024',
+        rank: null,
+        totalParticipants: null,
+        description:
+          'Predict credit default probability with a focus on model stability over time. Explored credit bureau, person, and static features across multiple notebooks.',
+        approach: ['XGBoost', 'Feature Engineering', 'Credit Bureau Data'],
+        url: 'https://www.kaggle.com/competitions/home-credit-credit-risk-model-stability',
+        status: 'participated',
+      },
+      {
+        id: 1,
+        name: 'Titanic — Machine Learning from Disaster',
+        date: 'Jan 2022',
+        rank: null,
+        totalParticipants: null,
+        description:
+          'Classic intro competition predicting passenger survival on the Titanic. Started during university as a first hands-on dive into Kaggle — explored several models and basic feature engineering.',
+        approach: ['Logistic Regression', 'Random Forest', 'Feature Engineering'],
+        url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202201_titanic_ml_from_disaster',
+        status: 'practice',
       },
     ],
   },
@@ -463,6 +392,10 @@ function App() {
   const [showAllContributions, setShowAllContributions] = useState(false)
   const [selectedProviderCerts, setSelectedProviderCerts] =
     useState<CertificationProvider | null>(null)
+  const [showCompetitionsDialog, setShowCompetitionsDialog] = useState(false)
+  const [selectedCompetition, setSelectedCompetition] = useState<Competition | null>(null)
+  const [competitionSearch, setCompetitionSearch] = useState('')
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set())
   const [visibleSkillCountByExp, setVisibleSkillCountByExp] = useState<
     Record<number, number>
   >({})
@@ -764,7 +697,7 @@ function App() {
   const displayedExperiences = showAllExperiences
     ? experiences
     : experiences.slice(0, 3)
-  const displayedProjects = showAllProjects ? projects : projects.slice(0, 3)
+  const displayedProjects = showAllProjects ? projects : projects.slice(0, 4)
   const displayedContributions = showAllContributions
     ? contributionsDetailed
     : contributionsDetailed.slice(0, 3)
@@ -1093,7 +1026,13 @@ function App() {
                       window.open('https://www.kaggle.com/gonxatroll', '_blank')
                     }
                   >
-                    <span className="text-sm font-bold">K</span>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="h-5 w-5 fill-current"
+                    >
+                      <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336" />
+                    </svg>
                     Kaggle
                   </Button>
                   <Button
@@ -1320,12 +1259,15 @@ function App() {
       <section id="projects" className="px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">
+              Selected Work
+            </p>
             <h2 className="text-4xl font-bold text-white sm:text-5xl">
               Projects
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-xl">
-              Explore a selection of my data science projects, showcasing my
-              skills and experience in various domains.
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300">
+              A selection of data science projects spanning forecasting,
+              NLP, segmentation, and decision intelligence.
             </p>
           </div>
 
@@ -1333,50 +1275,51 @@ function App() {
             {displayedProjects.map((project) => (
               <article
                 key={project.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border transition-all hover:scale-[1.02] hover:shadow-2xl"
+                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
                 onClick={() => window.open(project.url, '_blank')}
               >
+                {/* Image with scale on hover */}
                 <img
                   src={resolveAssetUrl(project.image)}
                   alt={project.title}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.55)_100%)]" />
-                <div
-                  className="absolute inset-0 flex flex-col justify-end p-6 transition-transform duration-500"
-                  style={{
-                    transform:
-                      hoveredProject === project.id
-                        ? 'translateY(-20px)'
-                        : 'translateY(0)',
-                  }}
-                >
-                  <h3 className="text-xl font-bold text-white">
-                    {project.title}
-                  </h3>
-                  <p className="mb-3 mt-2 text-sm text-slate-200">
-                    {hoveredProject === project.id
-                      ? project.fullDesc
-                      : project.shortDesc}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                {/* Persistent gradient */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+
+                {/* Always-visible: title + tags */}
+                <div className="absolute inset-x-0 bottom-0 p-6 transition-transform duration-500 group-hover:translate-y-[-5.5rem]">
+                  <h3 className="text-xl font-bold text-white">{project.title}</h3>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded bg-primary px-2 py-1 text-xs text-white"
+                        className="rounded-full border border-primary/40 bg-primary/20 px-2.5 py-0.5 text-xs text-primary/90"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
                 </div>
+
+                {/* Slide-up glass reveal panel */}
+                <div
+                  className="absolute inset-x-3 bottom-3 rounded-xl bg-[#0d1620]/85 p-4 backdrop-blur-md transition-all duration-500"
+                  style={{
+                    transform: hoveredProject === project.id ? 'translateY(0)' : 'translateY(115%)',
+                    opacity: hoveredProject === project.id ? 1 : 0,
+                  }}
+                >
+                  <p className="text-sm leading-relaxed text-slate-300">{project.fullDesc}</p>
+                  <p className="mt-2.5 text-xs font-medium text-primary">View on GitHub →</p>
+                </div>
               </article>
             ))}
           </div>
 
-          {projects.length > 3 && !showAllProjects && (
+          {projects.length > 4 && !showAllProjects && (
             <div className="mt-8 flex justify-center">
               <Button
                 onClick={() => setShowAllProjects(true)}
@@ -1393,53 +1336,66 @@ function App() {
       <section id="contributions" className="px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">
+              Beyond the Job
+            </p>
             <h2 className="text-4xl font-bold text-white sm:text-5xl">
               Contributions
             </h2>
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300">
+              Research, tooling, and work that extends beyond day-to-day responsibilities.
+            </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {displayedContributions.map((contribution) => (
               <article
                 key={contribution.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border transition-all hover:scale-[1.02] hover:shadow-2xl"
+                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onMouseEnter={() => setHoveredContribution(contribution.id)}
                 onMouseLeave={() => setHoveredContribution(null)}
-                onClick={() => setSelectedContribution(contribution)}
+                onClick={() => {
+                  if (contribution.id === 5) {
+                    setShowCompetitionsDialog(true)
+                  } else {
+                    setSelectedContribution(contribution)
+                  }
+                }}
               >
+                {/* Image with scale on hover */}
                 <img
                   src={resolveAssetUrl(contribution.image)}
                   alt={contribution.title}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.55)_100%)]" />
-                <div
-                  className="absolute inset-0 flex flex-col justify-end p-6 transition-transform duration-500"
-                  style={{
-                    transform:
-                      hoveredContribution === contribution.id
-                        ? 'translateY(-20px)'
-                        : 'translateY(0)',
-                  }}
-                >
-                  <h3 className="text-xl font-bold text-white">
-                    {contribution.title}
-                  </h3>
-                  <p className="mb-3 mt-2 text-sm text-slate-200">
-                    {hoveredContribution === contribution.id
-                      ? contribution.fullDesc
-                      : contribution.shortDesc}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
+                {/* Persistent gradient */}
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+
+                {/* Always-visible: title + tags */}
+                <div className="absolute inset-x-0 bottom-0 p-6 transition-transform duration-500 group-hover:translate-y-[-5.5rem]">
+                  <h3 className="text-xl font-bold text-white">{contribution.title}</h3>
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {contribution.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded bg-primary px-2 py-1 text-xs text-white"
+                        className="rounded-full border border-primary/40 bg-primary/20 px-2.5 py-0.5 text-xs text-primary/90"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
+                </div>
+
+                {/* Slide-up glass reveal panel */}
+                <div
+                  className="absolute inset-x-3 bottom-3 rounded-xl bg-[#0d1620]/85 p-4 backdrop-blur-md transition-all duration-500"
+                  style={{
+                    transform: hoveredContribution === contribution.id ? 'translateY(0)' : 'translateY(115%)',
+                    opacity: hoveredContribution === contribution.id ? 1 : 0,
+                  }}
+                >
+                  <p className="text-sm leading-relaxed text-slate-300">{contribution.fullDesc}</p>
+                  <p className="mt-2.5 text-xs font-medium text-primary">See details →</p>
                 </div>
               </article>
             ))}
@@ -1462,10 +1418,13 @@ function App() {
       <section id="certifications" className="px-4 py-20 sm:px-6">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 text-center">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">
+              Credentials
+            </p>
             <h2 className="text-4xl font-bold text-white sm:text-5xl">
               Certifications
             </h2>
-            <p className="mx-auto mt-4 max-w-3xl text-xl">
+            <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300">
               Professional certifications demonstrating expertise across
               various data science platforms and technologies.
             </p>
@@ -1502,7 +1461,7 @@ function App() {
               {visibleCertifications.map((provider) => (
                 <div
                   key={provider.provider}
-                  className="rounded-2xl border border-border bg-card p-4"
+                  className="rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(17,115,212,0.12)]"
                 >
                   <div className="mb-3 flex flex-col items-center">
                     <div className="mb-2 flex h-20 w-20 items-center justify-center">
@@ -1522,12 +1481,16 @@ function App() {
                       <button
                         key={cert.name}
                         type="button"
-                        className="w-full rounded-lg p-2 text-left transition-all"
+                        className="w-full cursor-pointer rounded-lg p-2 text-left transition-all duration-200"
                         style={{
                           backgroundColor:
                             hoveredCertIndex === `${provider.provider}-${idx}`
-                              ? '#1173d4'
-                              : '#101922',
+                              ? 'rgba(17,115,212,0.18)'
+                              : 'transparent',
+                          borderLeft:
+                            hoveredCertIndex === `${provider.provider}-${idx}`
+                              ? '2px solid #1173d4'
+                              : '2px solid transparent',
                         }}
                         onMouseEnter={() =>
                           setHoveredCertIndex(`${provider.provider}-${idx}`)
@@ -1535,7 +1498,7 @@ function App() {
                         onMouseLeave={() => setHoveredCertIndex(null)}
                         onClick={() => window.open(cert.url, '_blank')}
                       >
-                        <span className="line-clamp-2 text-xs text-white">
+                        <span className="line-clamp-2 text-xs text-slate-200">
                           {cert.name}
                         </span>
                       </button>
@@ -1581,9 +1544,58 @@ function App() {
         </div>
       </section>
 
-      <footer className="border-t border-border px-4 py-12 sm:px-6">
-        <div className="mx-auto max-w-6xl text-center">
-          <p>© 2026 Gonzalo Candel. All rights reserved.</p>
+      <footer className="border-t border-border/60 px-4 py-14 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col items-center gap-6">
+            <div className="flex items-center gap-2">
+              <span className="text-base font-semibold text-white">Gonzalo Candel</span>
+              <span className="text-slate-600">·</span>
+              <span className="text-sm text-primary">Data Scientist</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                aria-label="LinkedIn"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border/80 text-slate-400 transition-all duration-200 hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                onClick={() => window.open('https://www.linkedin.com/in/gonzalo-candel-peir%C3%B3/', '_blank')}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                  <path d="M4.98 3.5C4.98 4.88 3.86 6 2.48 6S0 4.88 0 3.5 1.12 1 2.48 1s2.5 1.12 2.5 2.5ZM.5 8h4V23h-4V8Zm7 0h3.83v2.05h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V23h-4v-7.02c0-1.67-.03-3.82-2.33-3.82-2.34 0-2.7 1.82-2.7 3.7V23h-4V8Z" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="GitHub"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border/80 text-slate-400 transition-all duration-200 hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                onClick={() => window.open('https://github.com/GonxaTroll', '_blank')}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                  <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55 0-.27-.01-1.16-.02-2.1-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.27-5.23-5.68 0-1.26.45-2.3 1.2-3.11-.12-.3-.52-1.5.11-3.12 0 0 .98-.31 3.2 1.19A11.1 11.1 0 0 1 12 6.1c.98 0 1.97.13 2.89.39 2.22-1.5 3.2-1.2 3.2-1.2.64 1.63.24 2.83.12 3.13.75.81 1.2 1.85 1.2 3.11 0 4.42-2.69 5.38-5.25 5.66.41.35.78 1.04.78 2.1 0 1.52-.01 2.74-.01 3.11 0 .3.2.66.79.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Kaggle"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border/80 text-slate-400 transition-all duration-200 hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                onClick={() => window.open('https://www.kaggle.com/gonxatroll', '_blank')}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 fill-current">
+                  <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                aria-label="Email"
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border/80 text-slate-400 transition-all duration-200 hover:border-primary/60 hover:bg-primary/10 hover:text-primary"
+                onClick={() => { window.location.href = 'mailto:gonzalo.canpei@gmail.com' }}
+              >
+                <Mail className="h-4 w-4" />
+              </button>
+            </div>
+
+            <p className="text-sm text-slate-500">© 2026 Gonzalo Candel. All rights reserved.</p>
+          </div>
         </div>
       </footer>
 
@@ -1620,12 +1632,12 @@ function App() {
               <h4 className="mb-2 font-semibold text-primary">
                 Key Responsibilities & Achievements
               </h4>
-              <p className="mb-3">{selectedExp?.description}</p>
+              <p className="mb-3 text-slate-300">{selectedExp?.description}</p>
               <ul className="space-y-2">
                 {selectedExp?.tasks.map((task) => (
                   <li key={task} className="flex gap-2">
-                    <span className="text-primary">•</span>
-                    <span>{task}</span>
+                    <span className="mt-0.5 text-primary">▸</span>
+                    <span className="text-slate-300">{task}</span>
                   </li>
                 ))}
               </ul>
@@ -1652,20 +1664,27 @@ function App() {
               <button
                 key={item.name}
                 type="button"
-                className="rounded-lg border border-border p-4 text-left transition-all hover:scale-[1.02]"
+                className="cursor-pointer rounded-lg border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,115,212,0.15)]"
                 style={{
                   backgroundColor:
                     hoveredSubItem === idx ? '#1e2a3a' : '#101922',
+                  borderColor:
+                    hoveredSubItem === idx
+                      ? 'rgba(17,115,212,0.5)'
+                      : 'rgba(30,42,58,0.8)',
                 }}
                 onMouseEnter={() => setHoveredSubItem(idx)}
                 onMouseLeave={() => setHoveredSubItem(null)}
                 onClick={() => window.open(item.url, '_blank')}
               >
                 <h4 className="mb-2 font-semibold text-white">{item.name}</h4>
-                <p className="text-sm">{item.description}</p>
-                {hoveredSubItem === idx && (
-                  <p className="mt-2 text-xs text-primary">Click to view →</p>
-                )}
+                <p className="text-sm text-slate-300">{item.description}</p>
+                <p
+                  className="mt-2 text-xs text-primary transition-opacity duration-200"
+                  style={{ opacity: hoveredSubItem === idx ? 1 : 0 }}
+                >
+                  View →
+                </p>
               </button>
             ))}
           </div>
@@ -1717,6 +1736,225 @@ function App() {
               </button>
             ))}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Competitions dialog ── */}
+      <Dialog open={showCompetitionsDialog} onOpenChange={() => { setShowCompetitionsDialog(false); setSelectedCompetition(null); setCompetitionSearch('') }}>
+        <DialogContent className="max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.98),rgba(16,25,34,0.98))] shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
+            <DialogDescription className="text-slate-400">
+              Kaggle challenges across forecasting, credit risk, and combinatorial optimization.
+            </DialogDescription>
+          </DialogHeader>
+
+          {competitionCategories.map((category) => {
+            const isCollapsed = collapsedCategories.has(category.name)
+            const toggleCollapse = () =>
+              setCollapsedCategories((prev) => {
+                const next = new Set(prev)
+                if (next.has(category.name)) next.delete(category.name)
+                else next.add(category.name)
+                return next
+              })
+            return (
+            <div key={category.name} className="mt-2">
+              {/* Category header — click to collapse */}
+              <button
+                type="button"
+                className="mb-4 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-1 py-1 transition-colors hover:bg-white/5"
+                onClick={toggleCollapse}
+              >
+                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-[#20BEFF]">
+                  <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336" />
+                </svg>
+                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">{category.name}</span>
+                <span className="ml-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs text-primary">
+                  {category.competitions.length} entries
+                </span>
+                <ChevronDown
+                  className="ml-auto h-4 w-4 text-slate-500 transition-transform duration-200"
+                  style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}
+                />
+              </button>
+
+              {/* Competition list */}
+              {!isCollapsed && selectedCompetition ? (
+                /* ── Detail view ── */
+                <div>
+                  <button
+                    type="button"
+                    className="mb-4 flex cursor-pointer items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-white"
+                    onClick={() => setSelectedCompetition(null)}
+                  >
+                    <ChevronLeft className="h-4 w-4" /> Back to list
+                  </button>
+                  <div className="rounded-xl border border-border/60 bg-card/50 p-6">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <h3 className="text-xl font-bold text-white">{selectedCompetition.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="rounded-full border border-border/60 bg-background/60 px-2.5 py-1 text-xs text-slate-400">
+                          {selectedCompetition.date}
+                        </span>
+                        {selectedCompetition.status === 'practice' && (
+                          <span className="rounded-full border border-slate-600/60 bg-slate-700/40 px-2.5 py-1 text-xs text-slate-400">Practice</span>
+                        )}
+                        {selectedCompetition.status === 'unfinished' && (
+                          <span className="rounded-full border border-amber-600/40 bg-amber-900/20 px-2.5 py-1 text-xs text-amber-400">Unfinished</span>
+                        )}
+                        {selectedCompetition.status === 'participated' && (
+                          <span className="rounded-full border border-blue-600/40 bg-blue-900/20 px-2.5 py-1 text-xs text-blue-400">Participated</span>
+                        )}
+                        {selectedCompetition.status === 'ranked' && (
+                          <span className="rounded-full border border-emerald-600/40 bg-emerald-900/20 px-2.5 py-1 text-xs text-emerald-400">Ranked</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {selectedCompetition.rank !== null && (
+                      <div className="mt-5 flex items-center gap-4 rounded-lg border border-primary/25 bg-primary/8 p-4">
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-white">#{selectedCompetition.rank}</p>
+                          <p className="text-xs text-slate-400">Final rank</p>
+                        </div>
+                        <div className="h-10 w-px bg-border/60" />
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-white">{selectedCompetition.totalParticipants?.toLocaleString()}</p>
+                          <p className="text-xs text-slate-400">Teams</p>
+                        </div>
+                        <div className="h-10 w-px bg-border/60" />
+                        <div className="text-center">
+                          <p className="text-3xl font-bold text-white">
+                            {selectedCompetition.totalParticipants
+                              ? `Top ${Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%`
+                              : '—'}
+                          </p>
+                          <p className="text-xs text-slate-400">Percentile</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <p className="mt-5 leading-relaxed text-slate-300">{selectedCompetition.description}</p>
+
+                    <div className="mt-5">
+                      <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Approach</p>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedCompetition.approach.map((tag) => (
+                          <span key={tag} className="rounded-full border border-primary/35 bg-primary/12 px-3 py-1 text-sm text-slate-200">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="mt-6 flex cursor-pointer items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+                      onClick={() => window.open(selectedCompetition.url, '_blank')}
+                    >
+                      View on GitHub
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              ) : !isCollapsed ? (
+                /* ── List view ── */
+                <div className="space-y-3">
+                  {/* Search input */}
+                  <div className="relative mb-1">
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 24 24"
+                      className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 fill-none stroke-slate-500 stroke-2"
+                    >
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+                    </svg>
+                    <input
+                      type="text"
+                      placeholder="Search competitions…"
+                      value={competitionSearch}
+                      onChange={(e) => setCompetitionSearch(e.target.value)}
+                      className="w-full rounded-lg border border-border/60 bg-background/60 py-2 pl-9 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
+
+                  {(() => {
+                    const q = competitionSearch.toLowerCase().trim()
+                    const filtered = q
+                      ? category.competitions.filter(
+                          (c) =>
+                            c.name.toLowerCase().includes(q) ||
+                            c.description.toLowerCase().includes(q) ||
+                            c.approach.some((a) => a.toLowerCase().includes(q)) ||
+                            c.status.toLowerCase().includes(q) ||
+                            c.date.toLowerCase().includes(q),
+                        )
+                      : category.competitions
+
+                    if (filtered.length === 0) {
+                      return (
+                        <p className="py-6 text-center text-sm text-slate-500">
+                          No competitions match &ldquo;{competitionSearch}&rdquo;
+                        </p>
+                      )
+                    }
+
+                    return filtered.map((comp) => (
+                    <button
+                      key={comp.id}
+                      type="button"
+                      className="group/comp w-full cursor-pointer rounded-xl border border-border/60 bg-card/40 px-4 py-3 text-left transition-all duration-200 hover:border-primary/50 hover:bg-card/70 hover:shadow-[0_4px_20px_rgba(17,115,212,0.12)]"
+                      onClick={() => setSelectedCompetition(comp)}
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        {/* Left: name + status + tags */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h4 className="font-semibold text-white transition-colors duration-200 group-hover/comp:text-primary">
+                              {comp.name}
+                            </h4>
+                            {comp.status === 'practice' && (
+                              <span className="rounded-full border border-slate-600/60 bg-slate-700/40 px-2 py-0.5 text-[10px] text-slate-400">Practice</span>
+                            )}
+                            {comp.status === 'unfinished' && (
+                              <span className="rounded-full border border-amber-600/40 bg-amber-900/20 px-2 py-0.5 text-[10px] text-amber-400">Unfinished</span>
+                            )}
+                            {comp.status === 'participated' && (
+                              <span className="rounded-full border border-blue-600/40 bg-blue-900/20 px-2 py-0.5 text-[10px] text-blue-400">Participated</span>
+                            )}
+                            {comp.status === 'ranked' && (
+                              <span className="rounded-full border border-emerald-600/40 bg-emerald-900/20 px-2 py-0.5 text-[10px] text-emerald-400">Ranked</span>
+                            )}
+                          </div>
+                          <div className="mt-1.5 flex flex-wrap gap-1.5">
+                            {comp.approach.map((tag) => (
+                              <span key={tag} className="rounded-full border border-primary/25 bg-primary/8 px-2 py-0.5 text-xs text-primary/80">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        {/* Right: date + rank + arrow */}
+                        <div className="flex shrink-0 flex-col items-end gap-1">
+                          <span className="text-xs text-slate-500">{comp.date}</span>
+                          {comp.rank !== null && (
+                            <span className="text-xs font-semibold text-emerald-400">
+                              #{comp.rank} / {comp.totalParticipants?.toLocaleString()}
+                            </span>
+                          )}
+                          <ChevronRight className="mt-0.5 h-4 w-4 text-slate-600 transition-colors duration-200 group-hover/comp:text-primary" />
+                        </div>
+                      </div>
+                    </button>
+                    ))
+                  })()}
+                </div>
+              ) : null}
+            </div>
+            )
+          })}
         </DialogContent>
       </Dialog>
     </div>

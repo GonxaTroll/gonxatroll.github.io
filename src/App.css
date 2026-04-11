@@ -77,3 +77,14 @@
     min-height: 11rem;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-glow::before,
+  .page-glow::after {
+    animation: none;
+  }
+
+  .timeline-line-active {
+    transition: none;
+  }
+}

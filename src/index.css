@@ -1,20 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --background: #101922;
-  --foreground: #696c73;
+  --foreground: #cbd5e1;
   --card: #1a2332;
-  --card-foreground: #696c73;
+  --card-foreground: #cbd5e1;
   --popover: #1a2332;
-  --popover-foreground: #696c73;
+  --popover-foreground: #cbd5e1;
   --primary: #1173d4;
   --primary-foreground: #ffffff;
   --secondary: #1e2a3a;
-  --secondary-foreground: #696c73;
+  --secondary-foreground: #94a3b8;
   --muted: #1e2a3a;
-  --muted-foreground: #696c73;
+  --muted-foreground: #94a3b8;
   --accent: #1173d4;
   --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
@@ -79,6 +80,11 @@
     @apply bg-background text-foreground;
     margin: 0;
     min-width: 320px;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
   }
 
   a {
