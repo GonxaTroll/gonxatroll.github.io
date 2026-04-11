@@ -145,10 +145,10 @@ const projects: Project[] = [
     shortDesc:
       'Optimization approach applied to fashion narrative sequencing and story generation.',
     fullDesc:
-      'Explores constrained optimization methods to sequence and generate coherent fashion narratives — combining creative AI with structured decision-making. Part of the 2026 weekly DS learning log.',
-    image: '/coffee-cup-on-desk-workspace.jpg',
+      'Web application that relies on optimization methods to generate the best-rewarding fashion items to order in the mobile game Fashion Story.',
+    image: '/fashion-story-optimizer.jpg',
     url: 'https://github.com/GonxaTroll/fashion-story-optimizer',
-    tags: ['Python', 'Optimization', 'NLP'],
+    tags: ['Python', 'Optimization', 'MILP', 'Heuristics', 'FastAPI', 'React'],
   },
   {
     id: 9,
@@ -156,8 +156,8 @@ const projects: Project[] = [
     shortDesc:
       'Weekly learning log tracking data science and algorithms work throughout 2026.',
     fullDesc:
-      'A structured weekly repository covering path-finding, dimensionality reduction, optimization, and other topics — each week\'s folder contains notebooks, code, and write-ups documenting hands-on experimentation.',
-    image: '/laptop-with-code.png',
+      'A structured weekly repository covering data science topics, algorithms and miscellaneous learnings throughout 2026.',
+    image: '/ds-log-2026.png',
     url: 'https://github.com/GonxaTroll/ds-log-2026',
     tags: ['Python', 'Algorithms', 'ML', 'Jupyter'],
   },
@@ -167,10 +167,10 @@ const projects: Project[] = [
     shortDesc:
       'Python package for PCA analysis, outlier detection, and high-dimensional data visualization.',
     fullDesc:
-      'A reusable Python library for dimensionality reduction workflows: PCA with variance/eigenvalue diagnostics, Hotelling\'s T² and SPE (Q-statistic) outlier detection, and publication-quality loading and score plots. Tested with pytest, MIT licensed.',
-    image: '/data-dashboard.png',
+      'A reusable Python library for dimensionality reduction workflows: PCA with variance/eigenvalue diagnostics, Hotelling\'s T² and SPE (Q-statistic) outlier detection, and publication-quality loading and score plots.',
+    image: '/dimensionality-reduction.png',
     url: 'https://github.com/GonxaTroll/dimensionality-reduction',
-    tags: ['Python', 'PCA', 'NumPy', 'Statistics'],
+    tags: ['Python', 'PCA', 'Visualization'],
   },
   {
     id: 11,
@@ -178,10 +178,10 @@ const projects: Project[] = [
     shortDesc:
       'Exact models and genetic algorithms for automatic team formation — bachelor\'s thesis code.',
     fullDesc:
-      'Two complementary approaches to team formation: exact mathematical programming with ORTools and a genetic algorithm metaheuristic. The research from this codebase led to publications at HAIS 2023 and in Neurocomputing.',
-    image: '/sales-forecasting-chart-with-trend-lines.jpg',
+      'Team formation by exact mathematical programming with ORTools and a genetic algorithm metaheuristic. The research from this codebase led to publications at HAIS 2023 and in Neurocomputing.',
+    image: '/team-formation-optimization.png',
     url: 'https://github.com/GonxaTroll/Exact-models-and-metaheuristics-for-team-formation-TFG_Code',
-    tags: ['Python', 'Optimization', 'Genetic Algorithms', 'ORTools'],
+    tags: ['Python', 'Optimization', 'Exact models', 'Genetic Algorithms'],
   },
 ]
 
@@ -193,7 +193,7 @@ const contributionsDetailed: Contribution[] = [
       'Authored work on optimization methods for automatic team formation.',
     fullDesc:
       'Published research derived from team formation optimization methods, with one paper presented at HAIS 2023 and a follow-up accepted by Neurocomputing.',
-    image: '/laptop-with-code.png',
+    image: '/research-publications.png',
     url: 'https://github.com/GonxaTroll',
     tags: ['Research', 'Optimization', 'Metaheuristics', 'Python'],
     subItems: [
@@ -217,8 +217,8 @@ const contributionsDetailed: Contribution[] = [
     shortDesc:
       'Kaggle challenges spanning forecasting, credit risk, and combinatorial optimization.',
     fullDesc:
-      'Five Kaggle competitions covering time series forecasting, credit risk modeling, and optimization problems — from a university practice run with Titanic to a custom hybrid genetic algorithm for the Santa tree packing challenge.',
-    image: '/data-science-competition.jpg',
+      'Coding competitions covering time series forecasting, credit risk modeling, optimization problems and more.',
+    image: '/competitions.jpeg',
     url: 'https://www.kaggle.com/gonxatroll',
     tags: ['Kaggle', 'Forecasting', 'Optimization', 'ML'],
     subItems: [],
@@ -230,16 +230,28 @@ const competitionCategories: CompetitionCategoryGroup[] = [
     name: 'Kaggle',
     competitions: [
       {
+        id: 6,
+        name: 'Predict Customer Churn',
+        date: 'Mar 2026',
+        rank: 2442,
+        totalParticipants: 4142,
+        description:
+          'Playground competition predicting customer churn. Covered data validation, exploratory analysis, and predictive modeling across structured customer features.',
+        approach: ['Classification', 'EDA', 'Feature Engineering'],
+        url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202603_predict_customer_churn',
+        status: 'ranked',
+      },
+      {
         id: 5,
         name: 'Santa — Tree Packing',
         date: 'Nov 2025',
-        rank: null,
-        totalParticipants: null,
+        rank: 3009,
+        totalParticipants: 3357,
         description:
-          'Optimization challenge: pack Christmas trees into containers as efficiently as possible. Implemented a hybrid genetic algorithm and simulated annealing approach.',
+          'Optimization challenge: pack Christmas trees into containers as efficiently as possible. Implemented a hybrid genetic algorithm.',
         approach: ['Genetic Algorithm', 'Simulated Annealing', 'Optimization'],
         url: 'https://github.com/GonxaTroll/competitions/tree/main/kaggle/202511_santa_tree_packing',
-        status: 'participated',
+        status: 'ranked',
       },
       {
         id: 4,
@@ -269,13 +281,13 @@ const competitionCategories: CompetitionCategoryGroup[] = [
         id: 2,
         name: 'Home Credit — Credit Risk Model Stability',
         date: 'Feb 2024',
-        rank: null,
-        totalParticipants: null,
+        rank: 2683,
+        totalParticipants: 3856,
         description:
           'Predict credit default probability with a focus on model stability over time. Explored credit bureau, person, and static features across multiple notebooks.',
         approach: ['XGBoost', 'Feature Engineering', 'Credit Bureau Data'],
         url: 'https://www.kaggle.com/competitions/home-credit-credit-risk-model-stability',
-        status: 'participated',
+        status: 'ranked',
       },
       {
         id: 1,
@@ -697,7 +709,7 @@ function App() {
   const displayedExperiences = showAllExperiences
     ? experiences
     : experiences.slice(0, 3)
-  const displayedProjects = showAllProjects ? projects : projects.slice(0, 4)
+  const displayedProjects = showAllProjects ? projects : projects.slice(0, 3)
   const displayedContributions = showAllContributions
     ? contributionsDetailed
     : contributionsDetailed.slice(0, 3)
@@ -1289,37 +1301,29 @@ function App() {
                 {/* Persistent gradient */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
 
-                {/* Always-visible: title + tags */}
-                <div className="absolute inset-x-0 bottom-0 p-6 transition-transform duration-500 group-hover:translate-y-[-5.5rem]">
+                {/* Bottom content: title, tags, description */}
+                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-primary/40 bg-primary/20 px-2.5 py-0.5 text-xs text-primary/90"
+                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                </div>
-
-                {/* Slide-up glass reveal panel */}
-                <div
-                  className="absolute inset-x-3 bottom-3 rounded-xl bg-[#0d1620]/85 p-4 backdrop-blur-md transition-all duration-500"
-                  style={{
-                    transform: hoveredProject === project.id ? 'translateY(0)' : 'translateY(115%)',
-                    opacity: hoveredProject === project.id ? 1 : 0,
-                  }}
-                >
-                  <p className="text-sm leading-relaxed text-slate-300">{project.fullDesc}</p>
-                  <p className="mt-2.5 text-xs font-medium text-primary">View on GitHub →</p>
+                  <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
+                    <p className="text-sm leading-relaxed text-slate-300">{project.fullDesc}</p>
+                    <p className="mt-2 text-xs font-medium text-primary">View on GitHub →</p>
+                  </div>
                 </div>
               </article>
             ))}
           </div>
 
-          {projects.length > 4 && !showAllProjects && (
+          {projects.length > 3 && !showAllProjects && (
             <div className="mt-8 flex justify-center">
               <Button
                 onClick={() => setShowAllProjects(true)}
@@ -1371,31 +1375,23 @@ function App() {
                 {/* Persistent gradient */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
 
-                {/* Always-visible: title + tags */}
-                <div className="absolute inset-x-0 bottom-0 p-6 transition-transform duration-500 group-hover:translate-y-[-5.5rem]">
+                {/* Bottom content: title, tags, description */}
+                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{contribution.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {contribution.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-primary/40 bg-primary/20 px-2.5 py-0.5 text-xs text-primary/90"
+                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                </div>
-
-                {/* Slide-up glass reveal panel */}
-                <div
-                  className="absolute inset-x-3 bottom-3 rounded-xl bg-[#0d1620]/85 p-4 backdrop-blur-md transition-all duration-500"
-                  style={{
-                    transform: hoveredContribution === contribution.id ? 'translateY(0)' : 'translateY(115%)',
-                    opacity: hoveredContribution === contribution.id ? 1 : 0,
-                  }}
-                >
-                  <p className="text-sm leading-relaxed text-slate-300">{contribution.fullDesc}</p>
-                  <p className="mt-2.5 text-xs font-medium text-primary">See details →</p>
+                  <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
+                    <p className="text-sm leading-relaxed text-slate-300">{contribution.fullDesc}</p>
+                    <p className="mt-2 text-xs font-medium text-primary">See details →</p>
+                  </div>
                 </div>
               </article>
             ))}
@@ -1769,7 +1765,7 @@ function App() {
                 <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-[#20BEFF]">
                   <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336" />
                 </svg>
-                <span className="text-sm font-semibold uppercase tracking-[0.2em] text-slate-300">{category.name}</span>
+                <span className="text-sm font-semibold text-slate-300">{category.name}</span>
                 <span className="ml-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs text-primary">
                   {category.competitions.length} entries
                 </span>
@@ -1809,31 +1805,20 @@ function App() {
                         {selectedCompetition.status === 'ranked' && (
                           <span className="rounded-full border border-emerald-600/40 bg-emerald-900/20 px-2.5 py-1 text-xs text-emerald-400">Ranked</span>
                         )}
+                        {selectedCompetition.rank !== null && (
+                          <>
+                            <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-white">
+                              #{selectedCompetition.rank} / {selectedCompetition.totalParticipants?.toLocaleString()}
+                            </span>
+                            {selectedCompetition.totalParticipants && (
+                              <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
+                                Top {Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%
+                              </span>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
-
-                    {selectedCompetition.rank !== null && (
-                      <div className="mt-5 flex items-center gap-4 rounded-lg border border-primary/25 bg-primary/8 p-4">
-                        <div className="text-center">
-                          <p className="text-3xl font-bold text-white">#{selectedCompetition.rank}</p>
-                          <p className="text-xs text-slate-400">Final rank</p>
-                        </div>
-                        <div className="h-10 w-px bg-border/60" />
-                        <div className="text-center">
-                          <p className="text-3xl font-bold text-white">{selectedCompetition.totalParticipants?.toLocaleString()}</p>
-                          <p className="text-xs text-slate-400">Teams</p>
-                        </div>
-                        <div className="h-10 w-px bg-border/60" />
-                        <div className="text-center">
-                          <p className="text-3xl font-bold text-white">
-                            {selectedCompetition.totalParticipants
-                              ? `Top ${Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%`
-                              : '—'}
-                          </p>
-                          <p className="text-xs text-slate-400">Percentile</p>
-                        </div>
-                      </div>
-                    )}
 
                     <p className="mt-5 leading-relaxed text-slate-300">{selectedCompetition.description}</p>
 
