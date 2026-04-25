@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {
+  BarChart2,
+  Brain,
   Briefcase,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Cpu,
+  Database,
   Download,
+  GraduationCap,
   Mail,
 } from 'lucide-react'
 
@@ -78,6 +83,57 @@ type CertificationProvider = {
     url: string
   }[]
 }
+
+type SkillSubcategory = {
+  label: string
+  skills: string[]
+}
+
+type SkillCategory = {
+  name: string
+  icon: React.ComponentType<{ className?: string }>
+  subcategories: SkillSubcategory[]
+}
+
+const skillCategories: SkillCategory[] = [
+  {
+    name: 'Data Engineering & Architecture',
+    icon: Database,
+    subcategories: [
+      { label: 'Languages', skills: ['Python', 'R', 'SQL'] },
+      { label: 'Databases & Warehousing', skills: ['Snowflake', 'MySQL', 'SQL Server'] },
+      { label: 'Transformation & Orchestration', skills: ['dbt', 'Airflow'] },
+      { label: 'Ingestion', skills: ['Web Scraping'] },
+    ],
+  },
+  {
+    name: 'ML & Mathematical Optimization',
+    icon: Brain,
+    subcategories: [
+      { label: 'Frameworks', skills: ['Scikit-learn', 'Keras', 'Nixtla'] },
+      { label: 'Experiment Tracking', skills: ['MLflow'] },
+      { label: 'Optimization', skills: ['OR-Tools'] },
+      { label: 'Scientific Computing', skills: ['Pandas', 'NumPy'] },
+    ],
+  },
+  {
+    name: 'Deployment & MLOps',
+    icon: Cpu,
+    subcategories: [
+      { label: 'Backend & APIs', skills: ['FastAPI'] },
+      { label: 'Containerization', skills: ['Docker'] },
+      { label: 'Version Control', skills: ['Git'] },
+    ],
+  },
+  {
+    name: 'Data Visualization & Analytics',
+    icon: BarChart2,
+    subcategories: [
+      { label: 'BI Tools', skills: ['Tableau', 'Power BI'] },
+      { label: 'Programmatic Viz', skills: ['Plotly', 'Matplotlib', 'Seaborn'] },
+    ],
+  },
+]
 
 const experiences: Experience[] = [
   {
@@ -404,7 +460,6 @@ function App() {
   const [selectedContribution, setSelectedContribution] =
     useState<Contribution | null>(null)
   const [hoveredSubItem, setHoveredSubItem] = useState<number | null>(null)
-  const [certificationIndex, setCertificationIndex] = useState(0)
   const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
   const [kirbySprites, setKirbySprites] = useState<KirbySprite[]>([])
@@ -413,6 +468,7 @@ function App() {
   const [showAllContributions, setShowAllContributions] = useState(false)
   const [selectedProviderCerts, setSelectedProviderCerts] =
     useState<CertificationProvider | null>(null)
+  const [showEducationDialog, setShowEducationDialog] = useState(false)
   const [showCompetitionsDialog, setShowCompetitionsDialog] = useState(false)
   const [selectedCompetition, setSelectedCompetition] = useState<Competition | null>(null)
   const [competitionSearch, setCompetitionSearch] = useState('')
@@ -710,11 +766,6 @@ function App() {
     }
   }
 
-  const visibleCertifications = certificationsByProvider.slice(
-    certificationIndex,
-    certificationIndex + 5,
-  )
-
   const displayedExperiences = showAllExperiences
     ? experiences
     : experiences.slice(0, 3)
@@ -875,7 +926,7 @@ function App() {
           </button>
 
           <div className="hidden items-center gap-1 text-sm md:flex">
-            {['experience', 'projects', 'contributions', 'certifications'].map(
+            {['skills', 'experience', 'projects', 'contributions', 'education'].map(
               (item) => (
                 <button
                   key={item}
@@ -962,24 +1013,7 @@ function App() {
                 </p>
               </div>
 
-              {/* Core stack chips */}
-              <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
-                  Core Stack
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {['Python', 'SQL', 'dbt', 'Snowflake', 'Pandas', 'Scikit-learn', 'FastAPI', 'Docker', 'Tableau'].map(
-                    (skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-full border border-primary/25 bg-primary/10 px-3 py-1 text-sm text-primary/90"
-                      >
-                        {skill}
-                      </span>
-                    ),
-                  )}
-                </div>
-              </div>
+
 
               {/* Download resume */}
               <Button
@@ -1070,6 +1104,58 @@ function App() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills" className="px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeader
+            label="Toolkit"
+            title="Skills"
+            description="Technologies and methods I use to build data products and solve analytical problems."
+          />
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {skillCategories.map((category) => (
+              <div
+                key={category.name}
+                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(17,115,212,0.15)]"
+              >
+                {/* inner hover glow */}
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent" />
+                </div>
+
+                <div className="relative mb-3 flex items-center gap-2">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/40 group-hover:bg-primary/10">
+                    <category.icon className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300 group-hover:text-primary/80" />
+                  </div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 transition-colors duration-300 group-hover:text-primary/90">
+                    {category.name}
+                  </p>
+                </div>
+
+                <div className="relative space-y-2.5">
+                  {category.subcategories.map((sub) => (
+                    <div key={sub.label}>
+                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+                        {sub.label}
+                      </p>
+                      <div className="flex flex-wrap gap-1">
+                        {sub.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-slate-300 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/[0.13] group-hover:text-slate-200"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1262,7 +1348,7 @@ function App() {
                 onClick={() => setShowAllExperiences(true)}
                 className="gap-2 bg-primary text-white"
               >
-                Show All Experiences
+                Show Full Timeline
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </div>
@@ -1396,66 +1482,83 @@ function App() {
         </div>
       </section>
 
-      <section id="certifications" className="px-4 py-20 sm:px-6">
-        <div className="mx-auto max-w-7xl">
+      <section id="education" className="px-4 py-20 sm:px-6">
+        <div className="mx-auto max-w-5xl space-y-12">
           <SectionHeader
-            label="Credentials"
-            title="Certifications"
-            description="Professional certifications demonstrating expertise across various data science platforms and technologies."
+            label="Background"
+            title="Education"
+            description="Academic foundations, professional certifications, and languages."
           />
 
-          <div className="relative px-8">
+          {/* Academic */}
+          <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Academic</p>
             <button
               type="button"
-              onClick={() =>
-                setCertificationIndex((current) => Math.max(current - 1, 0))
-              }
-              disabled={certificationIndex === 0}
-              className="absolute left-0 top-1/2 z-10 -translate-x-2 -translate-y-1/2 rounded-full bg-primary p-3 text-white transition-all hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
+              className="group flex w-full items-center gap-5 rounded-2xl border border-border/60 bg-card/60 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)]"
+              onClick={() => setShowEducationDialog(true)}
             >
-              <ChevronLeft className="h-6 w-6" />
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/60 bg-card/60">
+                <GraduationCap className="h-5 w-5 text-slate-400" />
+              </div>
+              <div className="min-w-0 flex-1 text-left">
+                <p className="text-sm font-semibold text-white">Bachelor's in Data Science</p>
+                <p className="mt-0.5 text-xs text-slate-400">UPV · Universitat Politècnica de València</p>
+              </div>
+              <span className="shrink-0 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs text-slate-400">
+                2018 – 2022
+              </span>
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-primary/40 bg-primary/10 text-primary transition-all duration-300 group-hover:border-primary/70 group-hover:bg-primary/25">
+                <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
+              </span>
             </button>
+          </div>
 
-            <button
-              type="button"
-              onClick={() =>
-                setCertificationIndex((current) =>
-                  current + 5 < certificationsByProvider.length
-                    ? current + 1
-                    : current,
-                )
-              }
-              disabled={certificationIndex + 5 >= certificationsByProvider.length}
-              className="absolute right-0 top-1/2 z-10 translate-x-2 -translate-y-1/2 rounded-full bg-primary p-3 text-white transition-all hover:scale-110 disabled:cursor-not-allowed disabled:opacity-30"
-            >
-              <ChevronRight className="h-6 w-6" />
-            </button>
+          {/* Languages */}
+          <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Languages</p>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { language: 'Spanish', level: 'Native' },
+                { language: 'English', level: 'C2' },
+                { language: 'Chinese', level: 'HSK 2' },
+              ].map(({ language, level }) => (
+                <div
+                  key={language}
+                  className="flex items-center gap-3 rounded-xl border border-border/60 bg-card/60 px-5 py-3"
+                >
+                  <span className="text-sm font-semibold text-white">{language}</span>
+                  <span className="text-sm text-primary">{level}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-              {visibleCertifications.map((provider) => (
+          {/* Credentials */}
+          <div>
+            <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Credentials</p>
+            <div className="grid max-w-xl gap-3 sm:grid-cols-2 md:grid-cols-3">
+              {certificationsByProvider.map((provider) => (
                 <div
                   key={provider.provider}
-                  className="rounded-2xl border border-border/60 bg-card/60 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(17,115,212,0.12)]"
+                  className="rounded-xl border border-border/60 bg-card/60 p-3 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(17,115,212,0.12)]"
                 >
-                  <div className="mb-3 flex flex-col items-center">
-                    <div className="mb-2 flex h-20 w-20 items-center justify-center">
+                  <div className="mb-2 flex items-center gap-2.5">
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center">
                       <img
                         src={resolveAssetUrl(provider.logo)}
                         alt={provider.provider}
-                        className="max-h-20 max-w-20 object-contain"
+                        className="max-h-8 max-w-8 object-contain"
                       />
                     </div>
-                    <h3 className="text-center text-sm font-bold text-white">
-                      {provider.provider}
-                    </h3>
+                    <h3 className="text-xs font-bold text-white">{provider.provider}</h3>
                   </div>
-
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     {provider.certifications.slice(0, 2).map((cert, idx) => (
                       <button
                         key={cert.name}
                         type="button"
-                        className="w-full cursor-pointer rounded-lg p-2 text-left transition-all duration-200"
+                        className="w-full cursor-pointer rounded-md px-2 py-1.5 text-left transition-all duration-200"
                         style={{
                           backgroundColor:
                             hoveredCertIndex === `${provider.provider}-${idx}`
@@ -1466,51 +1569,23 @@ function App() {
                               ? '2px solid #1173d4'
                               : '2px solid transparent',
                         }}
-                        onMouseEnter={() =>
-                          setHoveredCertIndex(`${provider.provider}-${idx}`)
-                        }
+                        onMouseEnter={() => setHoveredCertIndex(`${provider.provider}-${idx}`)}
                         onMouseLeave={() => setHoveredCertIndex(null)}
                         onClick={() => window.open(cert.url, '_blank')}
                       >
-                        <span className="line-clamp-2 text-xs text-slate-200">
-                          {cert.name}
-                        </span>
+                        <span className="line-clamp-2 text-xs text-slate-400">{cert.name}</span>
                       </button>
                     ))}
                   </div>
-
                   {provider.certifications.length > 2 && (
                     <button
                       type="button"
-                      className="mt-2 w-full text-right text-xs text-primary transition-colors hover:underline"
+                      className="mt-1.5 w-full text-right text-xs text-primary transition-colors hover:underline"
                       onClick={() => setSelectedProviderCerts(provider)}
                     >
                       See more →
                     </button>
                   )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-16">
-            <h3 className="mb-8 text-center text-2xl font-bold text-white">
-              Languages
-            </h3>
-            <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-4">
-              {[
-                { language: 'Spanish', level: 'Native' },
-                { language: 'English', level: 'C2' },
-                { language: 'Chinese', level: 'HSK 2' },
-              ].map(({ language, level }) => (
-                <div
-                  key={language}
-                  className="flex min-w-40 flex-col items-center rounded-2xl border border-border bg-card px-8 py-5"
-                >
-                  <span className="text-base font-semibold text-white">
-                    {language}
-                  </span>
-                  <span className="mt-1 text-sm text-primary">{level}</span>
                 </div>
               ))}
             </div>
@@ -1572,6 +1647,35 @@ function App() {
           </div>
         </div>
       </footer>
+
+      <Dialog open={showEducationDialog} onOpenChange={() => setShowEducationDialog(false)}>
+        <DialogContent
+          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          showCloseButton
+        >
+          <DialogHeader>
+            <DialogTitle className="text-2xl text-white">Bachelor's in Data Science</DialogTitle>
+            <DialogDescription className="text-slate-300">
+              UPV · Universitat Politècnica de València | 2018 – 2022
+            </DialogDescription>
+          </DialogHeader>
+          <div>
+            <h4 className="mb-2 font-semibold text-primary">Highlights</h4>
+            <ul className="space-y-2">
+              {[
+                "Awarded Best Academic Record (2018/19)",
+                "Achieved 10 Honors in core technical subjects including Linear Algebra, Statistics, and Algorithmic Techniques for Big Data.",
+                "Bachelor's thesis on team formation optimization using mathematical programming (ORTools) and a genetic algorithm metaheuristic — research led to publications at HAIS 2023 and in Neurocomputing."
+              ].map((item) => (
+                <li key={item} className="flex gap-2">
+                  <span className="mt-0.5 text-primary">▸</span>
+                  <span className="text-slate-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
