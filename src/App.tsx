@@ -1260,18 +1260,15 @@ function App() {
             {skillCategories.map((category) => (
               <div
                 key={category.name}
-                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(17,115,212,0.15)]"
+                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm"
               >
                 {/* inner hover glow */}
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent" />
-                </div>
 
                 <div className="relative mb-3 flex items-center gap-2">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/40 group-hover:bg-primary/10">
-                    <category.icon className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300 group-hover:text-primary/80" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60">
+                    <category.icon className="h-3.5 w-3.5 text-slate-400" />
                   </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200 transition-colors duration-300 group-hover:text-primary/90">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
                     {category.name}
                   </p>
                 </div>
@@ -1286,7 +1283,7 @@ function App() {
                         {sub.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="skill-chip rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-slate-300 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/[0.13] group-hover:text-slate-200"
+                            className="skill-chip rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100"
                           >
                             {skill}
                           </span>
@@ -1530,7 +1527,7 @@ function App() {
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="card-chip rounded-full px-2.5 py-0.5 text-xs"
+                        className="card-chip rounded-full px-2.5 py-1 text-xs font-medium"
                       >
                         {tag}
                       </span>
@@ -1596,7 +1593,7 @@ function App() {
                     {contribution.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="card-chip rounded-full px-2.5 py-0.5 text-xs"
+                        className="card-chip rounded-full px-2.5 py-1 text-xs font-medium"
                       >
                         {tag}
                       </span>

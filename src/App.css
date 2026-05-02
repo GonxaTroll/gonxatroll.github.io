@@ -197,14 +197,14 @@ html.light .card-img-overlay {
 /* ── Tag chips on image cards ────────────────────────────────────── */
 
 .card-chip {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(13, 22, 32, 0.9);
-  color: #e2e8f0;
+  border: 1px solid rgba(17, 115, 212, 0.45);
+  background-color: rgba(17, 115, 212, 0.15);
+  color: #f1f5f9;
 }
 html.light .card-chip {
-  border-color: rgba(148, 163, 184, 0.5);
-  background-color: rgba(226, 232, 240, 0.9);
-  color: #334155;
+  border-color: rgba(17, 115, 212, 0.45);
+  background-color: rgba(17, 115, 212, 0.15);
+  color: #1e293b;
 }
 
 /* ── Dialog / modal panels ───────────────────────────────────────── */
