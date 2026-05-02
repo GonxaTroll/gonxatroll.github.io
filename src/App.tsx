@@ -11,9 +11,22 @@ import {
   Download,
   GraduationCap,
   Mail,
+  MapPin,
   Moon,
   Sun,
 } from 'lucide-react'
+
+import {
+  siApacheairflow,
+  siDocker,
+  siFastapi,
+  siMlflow,
+  siNumpy,
+  siPandas,
+  siPython,
+  siScikitlearn,
+  siSnowflake,
+} from 'simple-icons'
 
 import './App.css'
 import { Button } from '@/components/ui/button'
@@ -96,6 +109,18 @@ type SkillCategory = {
   icon: React.ComponentType<{ className?: string }>
   subcategories: SkillSubcategory[]
 }
+
+const coreStack = [
+  { icon: siPython, label: 'Python' },
+  { icon: siSnowflake, label: 'Snowflake' },
+  { icon: siScikitlearn, label: 'scikit-learn' },
+  { icon: siPandas, label: 'pandas' },
+  { icon: siNumpy, label: 'NumPy' },
+  { icon: siFastapi, label: 'FastAPI' },
+  { icon: siApacheairflow, label: 'Airflow' },
+  { icon: siMlflow, label: 'MLflow' },
+  { icon: siDocker, label: 'Docker' },
+]
 
 const skillCategories: SkillCategory[] = [
   {
@@ -1034,9 +1059,9 @@ function App() {
         className="section-glow px-4 pb-24 pt-28 sm:px-6 sm:pt-32"
       >
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-start lg:gap-16">
+          <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-stretch lg:gap-16">
             {/* Left: photo + name + stats */}
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-6 lg:h-full lg:justify-between">
               {/* Photo frame — click for easter egg */}
               <button
                 type="button"
@@ -1061,6 +1086,20 @@ function App() {
                 <p className="mt-1.5 text-lg text-primary">
                   Data Scientist · ML &amp; Optimization
                 </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-400">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    Valencia, Spain
+                  </span>
+                  <span className="text-slate-600">·</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    Open to remote
+                  </span>
+                </div>
               </div>
 
               {/* Quick stats */}
@@ -1081,9 +1120,9 @@ function App() {
             </div>
 
             {/* Right: bio card + core stack + actions */}
-            <div className="space-y-6">
+            <div className="flex flex-col gap-4">
               {/* Bio in glass card */}
-              <div className="rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm">
+              <div className="flex-1 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm">
                 <p className="text-lg leading-relaxed text-slate-200">
                   Data Scientist with experience in forecasting, optimization, and
                   analytics, working across product and business teams to turn data
@@ -1095,35 +1134,37 @@ function App() {
                   systems. I enjoy building robust solutions that improve strategic
                   decision-making.
                 </p>
+                <div className="mt-5 border-t border-border/40 pt-5">
+                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Some of my stack
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {coreStack.map(({ icon, label }) => (
+                      <span
+                        key={label}
+                        className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 px-3 py-1 text-xs font-medium text-slate-300"
+                      >
+                        <svg role="img" viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0 fill-current opacity-75">
+                          <path d={icon.path} />
+                        </svg>
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-
-
-              {/* Download resume */}
-              <Button
-                size="lg"
-                className="group gap-2 border border-primary/60 bg-primary text-primary-foreground shadow-[0_0_0_rgba(17,115,212,0)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_28px_rgba(17,115,212,0.38)] hover:ring-2 hover:ring-primary/30 active:translate-y-0"
-                onClick={() => {
-                  const link = document.createElement('a')
-                  link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
-                  link.download = 'CV_Gonzalo.pdf'
-                  link.click()
-                }}
-              >
-                <Download className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5" />
-                Download Resume
-              </Button>
-
-              {/* Connect */}
+              {/* Connect + Resume — column sized to Connect row natural width */}
+              <div className="mt-auto flex w-fit flex-col items-start gap-4">
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-primary/80">
                   Connect
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open(
                         'https://www.linkedin.com/in/gonzalo-candel-peir%C3%B3/',
@@ -1143,7 +1184,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open('https://github.com/GonxaTroll', '_blank')
                     }
@@ -1160,7 +1201,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open('https://www.kaggle.com/gonxatroll', '_blank')
                     }
@@ -1177,7 +1218,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() => {
                       window.location.href = 'mailto:gonzalo.canpei@gmail.com'
                     }}
@@ -1186,6 +1227,22 @@ function App() {
                     Email
                   </Button>
                 </div>
+              </div>
+
+              {/* Download resume */}
+              <Button
+                size="lg"
+                className="group w-full justify-center gap-2 border border-primary/60 bg-primary text-primary-foreground shadow-[0_0_0_rgba(17,115,212,0)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_28px_rgba(17,115,212,0.38)] hover:ring-2 hover:ring-primary/30 active:translate-y-0"
+                onClick={() => {
+                  const link = document.createElement('a')
+                  link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
+                  link.download = 'CV_Gonzalo.pdf'
+                  link.click()
+                }}
+              >
+                <Download className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5" />
+                Download Resume
+              </Button>
               </div>
             </div>
           </div>
