@@ -430,7 +430,7 @@ function getStartYear(period: string) {
 }
 
 const experienceSkillChipClassName =
-  'shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
+  'exp-skill-chip shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
 
 type KirbySprite = {
   id: number
@@ -1785,7 +1785,7 @@ function App() {
                 {selectedExp?.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
+                    className="exp-skill-chip rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
                   >
                     {skill}
                   </span>

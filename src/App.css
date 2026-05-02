@@ -251,6 +251,13 @@ html.light .group:hover .skill-chip {
   color: #1d4ed8;
 }
 
+/* Career timeline + modal skill chips: text-slate-100 is unreadable on light bg */
+html.light .exp-skill-chip {
+  background-color: rgba(17, 115, 212, 0.1);
+  border-color: rgba(17, 115, 212, 0.45);
+  color: #1d4ed8;
+}
+
 /* Card hover text: give the bottom panel a solid light backdrop so
    description text is readable even where the image shows through */
 html.light .card-img-bottom {
