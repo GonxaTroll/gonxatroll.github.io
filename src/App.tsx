@@ -1104,15 +1104,15 @@ function App() {
 
               {/* Quick stats */}
               <div className="grid w-full grid-cols-3 gap-2">
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">4+</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Yrs Exp.</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">3</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Companies</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">2</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Publications</p>
                 </div>
@@ -1122,7 +1122,7 @@ function App() {
             {/* Right: bio card + core stack + actions */}
             <div className="flex flex-col gap-4">
               {/* Bio in glass card */}
-              <div className="flex-1 rounded-2xl border border-border/60 bg-card/40 p-6 backdrop-blur-sm">
+              <div className="flex-1 rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-6 backdrop-blur-sm">
                 <p className="text-lg leading-relaxed text-slate-200">
                   Data Scientist with experience in forecasting, optimization, and
                   analytics, working across product and business teams to turn data
@@ -1134,7 +1134,7 @@ function App() {
                   systems. I enjoy building robust solutions that improve strategic
                   decision-making.
                 </p>
-                <div className="mt-5 border-t border-border/40 pt-5">
+                <div className="bio-stack-divider mt-5 border-t border-border/40 pt-5">
                   <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
                     Some of my stack
                   </p>
