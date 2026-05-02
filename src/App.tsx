@@ -11,7 +11,22 @@ import {
   Download,
   GraduationCap,
   Mail,
+  MapPin,
+  Moon,
+  Sun,
 } from 'lucide-react'
+
+import {
+  siApacheairflow,
+  siDocker,
+  siFastapi,
+  siMlflow,
+  siNumpy,
+  siPandas,
+  siPython,
+  siScikitlearn,
+  siSnowflake,
+} from 'simple-icons'
 
 import './App.css'
 import { Button } from '@/components/ui/button'
@@ -94,6 +109,18 @@ type SkillCategory = {
   icon: React.ComponentType<{ className?: string }>
   subcategories: SkillSubcategory[]
 }
+
+const coreStack = [
+  { icon: siPython, label: 'Python' },
+  { icon: siSnowflake, label: 'Snowflake' },
+  { icon: siScikitlearn, label: 'scikit-learn' },
+  { icon: siPandas, label: 'pandas' },
+  { icon: siNumpy, label: 'NumPy' },
+  { icon: siFastapi, label: 'FastAPI' },
+  { icon: siApacheairflow, label: 'Airflow' },
+  { icon: siMlflow, label: 'MLflow' },
+  { icon: siDocker, label: 'Docker' },
+]
 
 const skillCategories: SkillCategory[] = [
   {
@@ -428,7 +455,7 @@ function getStartYear(period: string) {
 }
 
 const experienceSkillChipClassName =
-  'shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
+  'exp-skill-chip shrink-0 rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100'
 
 type KirbySprite = {
   id: number
@@ -461,6 +488,8 @@ function App() {
     useState<Contribution | null>(null)
   const [hoveredSubItem, setHoveredSubItem] = useState<number | null>(null)
   const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
+  const [isDark, setIsDark] = useState(true)
+  const [themeAnimating, setThemeAnimating] = useState(false)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
   const [kirbySprites, setKirbySprites] = useState<KirbySprite[]>([])
   const [showAllExperiences, setShowAllExperiences] = useState(false)
@@ -497,6 +526,18 @@ function App() {
       }
     >
   >({})
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', !isDark)
+  }, [isDark])
+
+  const handleThemeToggle = () => {
+    if (themeAnimating) return
+    setThemeAnimating(true)
+    // Icon swaps at the peak of the Gaussian arc (midpoint)
+    setTimeout(() => setIsDark((d) => !d), 310)
+    setTimeout(() => setThemeAnimating(false), 650)
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -880,6 +921,14 @@ function App() {
 
   return (
     <div className="page-bg isolate min-h-screen text-foreground">
+      {/* Skip link — keyboard/screen-reader users jump straight to content */}
+      <a
+        href="#about"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background"
+      >
+        Skip to main content
+      </a>
+
       <div aria-hidden="true" className="page-glow pointer-events-none fixed inset-0 -z-10" />
 
       {/* Floating Kirby easter egg */}
@@ -931,7 +980,7 @@ function App() {
                 <button
                   key={item}
                   type="button"
-                  className="relative rounded-md px-3 py-1.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
+                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
                   onClick={() => scrollToId(item)}
                 >
                   {item}
@@ -940,7 +989,67 @@ function App() {
             )}
           </div>
 
-          <div className="w-40" aria-hidden="true" />
+          <div className="flex w-40 items-center justify-end">
+            <button
+              type="button"
+              onClick={handleThemeToggle}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-border/50 bg-card/40 text-slate-400 backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:bg-primary/10 hover:text-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              {/* Gaussian bell curve hint — appears while animating */}
+              {themeAnimating && (
+                <div className="pointer-events-none absolute -top-[3.75rem] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5">
+                  <svg
+                    width="76"
+                    height="28"
+                    viewBox="0 0 76 28"
+                    fill="none"
+                    className="overflow-visible drop-shadow-sm"
+                  >
+                    {/* x-axis baseline */}
+                    <line
+                      x1="2"
+                      y1="24"
+                      x2="74"
+                      y2="24"
+                      stroke="rgba(17,115,212,0.25)"
+                      strokeWidth="0.8"
+                    />
+                    {/* Bell curve — Gaussian PDF shape */}
+                    <path
+                      d="M 2,23 C 10,23 14,19 18,13 C 22,7 26,2 38,2 C 50,2 54,7 58,13 C 62,19 66,23 74,23"
+                      stroke="rgba(17,115,212,0.8)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    {/* Moving dot tracing the curve */}
+                    <circle r="2.5" fill="#1173d4">
+                      <animateMotion
+                        dur="0.65s"
+                        repeatCount="1"
+                        fill="freeze"
+                        path="M 2,23 C 10,23 14,19 18,13 C 22,7 26,2 38,2 C 50,2 54,7 58,13 C 62,19 66,23 74,23"
+                      />
+                    </circle>
+                  </svg>
+                  <span className="font-mono text-[9px] tracking-tight text-primary/70">
+                    ~N(0,1)
+                  </span>
+                </div>
+              )}
+
+              {/* Icon — hops along the bell curve path */}
+              <span
+                className={`flex items-center justify-center ${themeAnimating ? 'theme-icon-hop' : ''}`}
+              >
+                {isDark ? (
+                  <Sun className="h-3.5 w-3.5" />
+                ) : (
+                  <Moon className="h-3.5 w-3.5" />
+                )}
+              </span>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -950,14 +1059,14 @@ function App() {
         className="section-glow px-4 pb-24 pt-28 sm:px-6 sm:pt-32"
       >
         <div className="mx-auto max-w-6xl">
-          <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-start lg:gap-16">
+          <div className="grid gap-12 lg:grid-cols-[280px_1fr] lg:items-stretch lg:gap-16">
             {/* Left: photo + name + stats */}
-            <div className="flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-6 lg:h-full lg:justify-between">
               {/* Photo frame — click for easter egg */}
               <button
                 type="button"
                 aria-label="Secret"
-                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary sm:h-64 sm:w-64"
+                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:h-64 sm:w-64"
                 onClick={spawnKirby}
               >
                 <img
@@ -977,19 +1086,33 @@ function App() {
                 <p className="mt-1.5 text-lg text-primary">
                   Data Scientist · ML &amp; Optimization
                 </p>
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-400">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="h-3.5 w-3.5 shrink-0" />
+                    Valencia, Spain
+                  </span>
+                  <span className="text-slate-600">·</span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="relative flex h-2 w-2">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                    </span>
+                    Open to remote
+                  </span>
+                </div>
               </div>
 
               {/* Quick stats */}
               <div className="grid w-full grid-cols-3 gap-2">
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">4+</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Yrs Exp.</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">3</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Companies</p>
                 </div>
-                <div className="rounded-xl border border-border/60 bg-card/40 p-3 text-center backdrop-blur-sm">
+                <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
                   <p className="text-xl font-bold text-white">2</p>
                   <p className="mt-0.5 text-[11px] text-slate-400">Publications</p>
                 </div>
@@ -997,9 +1120,9 @@ function App() {
             </div>
 
             {/* Right: bio card + core stack + actions */}
-            <div className="space-y-6">
+            <div className="flex flex-col gap-4">
               {/* Bio in glass card */}
-              <div className="rounded-2xl border border-border/60 bg-card/60 p-6 backdrop-blur-sm">
+              <div className="flex-1 rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-6 backdrop-blur-sm">
                 <p className="text-lg leading-relaxed text-slate-200">
                   Data Scientist with experience in forecasting, optimization, and
                   analytics, working across product and business teams to turn data
@@ -1011,35 +1134,37 @@ function App() {
                   systems. I enjoy building robust solutions that improve strategic
                   decision-making.
                 </p>
+                <div className="bio-stack-divider mt-5 border-t border-border/40 pt-5">
+                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Some of my stack
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {coreStack.map(({ icon, label }) => (
+                      <span
+                        key={label}
+                        className="flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 px-3 py-1 text-xs font-medium text-slate-300"
+                      >
+                        <svg role="img" viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0 fill-current opacity-75">
+                          <path d={icon.path} />
+                        </svg>
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-
-
-              {/* Download resume */}
-              <Button
-                size="lg"
-                className="group gap-2 border border-primary/60 bg-primary text-primary-foreground shadow-[0_0_0_rgba(17,115,212,0)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_28px_rgba(17,115,212,0.38)] hover:ring-2 hover:ring-primary/30 active:translate-y-0"
-                onClick={() => {
-                  const link = document.createElement('a')
-                  link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
-                  link.download = 'CV_Gonzalo.pdf'
-                  link.click()
-                }}
-              >
-                <Download className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5" />
-                Download Resume
-              </Button>
-
-              {/* Connect */}
+              {/* Connect + Resume — column sized to Connect row natural width */}
+              <div className="mt-auto flex w-fit flex-col items-start gap-4">
               <div>
-                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-primary/80">
                   Connect
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open(
                         'https://www.linkedin.com/in/gonzalo-candel-peir%C3%B3/',
@@ -1059,7 +1184,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open('https://github.com/GonxaTroll', '_blank')
                     }
@@ -1076,7 +1201,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() =>
                       window.open('https://www.kaggle.com/gonxatroll', '_blank')
                     }
@@ -1093,7 +1218,7 @@ function App() {
                   <Button
                     variant="secondary"
                     size="lg"
-                    className="gap-2 bg-secondary text-foreground hover:bg-secondary/90 hover:text-white"
+                    className="gap-2 border border-border/60 bg-card/40 text-foreground backdrop-blur-sm hover:bg-card/60 hover:text-white"
                     onClick={() => {
                       window.location.href = 'mailto:gonzalo.canpei@gmail.com'
                     }}
@@ -1102,6 +1227,22 @@ function App() {
                     Email
                   </Button>
                 </div>
+              </div>
+
+              {/* Download resume */}
+              <Button
+                size="lg"
+                className="group w-full justify-center gap-2 border border-primary/60 bg-primary text-primary-foreground shadow-[0_0_0_rgba(17,115,212,0)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_10px_28px_rgba(17,115,212,0.38)] hover:ring-2 hover:ring-primary/30 active:translate-y-0"
+                onClick={() => {
+                  const link = document.createElement('a')
+                  link.href = resolveAssetUrl('/CV_Gonzalo.pdf')
+                  link.download = 'CV_Gonzalo.pdf'
+                  link.click()
+                }}
+              >
+                <Download className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5" />
+                Download Resume
+              </Button>
               </div>
             </div>
           </div>
@@ -1119,18 +1260,15 @@ function App() {
             {skillCategories.map((category) => (
               <div
                 key={category.name}
-                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm transition-all duration-300 hover:border-primary/40 hover:shadow-[0_8px_32px_rgba(17,115,212,0.15)]"
+                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm"
               >
                 {/* inner hover glow */}
-                <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.07] via-transparent to-transparent" />
-                </div>
 
                 <div className="relative mb-3 flex items-center gap-2">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/40 group-hover:bg-primary/10">
-                    <category.icon className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300 group-hover:text-primary/80" />
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60">
+                    <category.icon className="h-3.5 w-3.5 text-slate-400" />
                   </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 transition-colors duration-300 group-hover:text-primary/90">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
                     {category.name}
                   </p>
                 </div>
@@ -1138,14 +1276,14 @@ function App() {
                 <div className="relative space-y-2.5">
                   {category.subcategories.map((sub) => (
                     <div key={sub.label}>
-                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+                      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
                         {sub.label}
                       </p>
                       <div className="flex flex-wrap gap-1">
                         {sub.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-slate-300 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/[0.13] group-hover:text-slate-200"
+                            className="skill-chip rounded-full border border-primary/45 bg-primary/15 px-2.5 py-1 text-xs font-medium text-slate-100"
                           >
                             {skill}
                           </span>
@@ -1169,9 +1307,9 @@ function App() {
           />
 
           <div className="relative" ref={experienceTimelineRef}>
-            <div className="timeline-line absolute bottom-0 left-6 top-0 w-px md:left-1/2 md:-translate-x-1/2" />
+            <div className="timeline-line absolute bottom-0 left-6 top-0 w-[2px] md:left-1/2 md:-translate-x-1/2" />
             <div
-              className="timeline-line-active pointer-events-none absolute left-6 w-px md:left-1/2 md:-translate-x-1/2"
+              className="timeline-line-active pointer-events-none absolute left-6 w-[2px] md:left-1/2 md:-translate-x-1/2"
               style={{
                 height: `${activeTimelineHeight}px`,
                 opacity: activeTimelineHeight > 0 ? 1 : 0,
@@ -1230,7 +1368,7 @@ function App() {
                     )}
 
                     <div
-                      className={`timeline-connector absolute top-12 hidden h-px w-8 md:block ${
+                      className={`timeline-connector absolute top-12 hidden h-[2px] w-8 md:block ${
                         isRight ? 'left-1/2 ml-6' : 'right-1/2 mr-6'
                       }`}
                       style={{
@@ -1247,11 +1385,13 @@ function App() {
                     />
 
                     <div
-                      className={`absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
+                      className={`timeline-node-dot absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
                         hoveredExp === exp.id ? 'scale-110' : 'scale-100'
-                      }`}
+                      } ${index === 0 ? 'timeline-node-current' : ''}`}
                       style={{
-                        backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
+                        backgroundColor: index === 0
+                          ? '#1173d4'
+                          : (isDark ? '#1e2a3a' : '#e2e8f0'),
                       }}
                     >
                       <Briefcase
@@ -1262,7 +1402,7 @@ function App() {
 
                     <button
                       type="button"
-                      className="w-full text-left md:w-[calc(50%-2.25rem)]"
+                      className="group/card w-full text-left focus-visible:outline-none md:w-[calc(50%-2.25rem)]"
                       ref={(element) => {
                         experienceCardRefs.current[exp.id] = element
                       }}
@@ -1271,7 +1411,7 @@ function App() {
                       onMouseLeave={() => setHoveredExp(null)}
                       onClick={() => setSelectedExp(exp)}
                     >
-                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] focus-visible:border-primary/70">
+                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-primary">{exp.company}</p>
                           <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
@@ -1368,7 +1508,7 @@ function App() {
             {displayedProjects.map((project) => (
               <article
                 key={project.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
+                className="group relative flex h-80 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onClick={() => window.open(project.url, '_blank')}
               >
                 {/* Image with scale on hover */}
@@ -1378,16 +1518,16 @@ function App() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Persistent gradient */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+                <div className="card-img-overlay absolute inset-0" />
 
-                {/* Bottom content: title, tags, description */}
-                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                {/* Bottom content: title, tags, description - flex-grow pushes to bottom */}
+                <div className="card-img-bottom relative mt-auto flex flex-col rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
+                        className="card-chip rounded-full px-2.5 py-1 text-xs font-medium"
                       >
                         {tag}
                       </span>
@@ -1428,7 +1568,7 @@ function App() {
             {displayedContributions.map((contribution) => (
               <article
                 key={contribution.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
+                className="group relative flex h-80 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onClick={() => {
                   if (contribution.id === 5) {
                     setShowCompetitionsDialog(true)
@@ -1444,16 +1584,16 @@ function App() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Persistent gradient */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+                <div className="card-img-overlay absolute inset-0" />
 
-                {/* Bottom content: title, tags, description */}
-                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                {/* Bottom content: title, tags, description - flex-grow pushes to bottom */}
+                <div className="card-img-bottom relative mt-auto flex flex-col rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{contribution.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {contribution.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
+                        className="card-chip rounded-full px-2.5 py-1 text-xs font-medium"
                       >
                         {tag}
                       </span>
@@ -1650,7 +1790,7 @@ function App() {
 
       <Dialog open={showEducationDialog} onOpenChange={() => setShowEducationDialog(false)}>
         <DialogContent
-          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1679,7 +1819,7 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1699,7 +1839,7 @@ function App() {
                 {selectedExp?.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
+                    className="exp-skill-chip rounded-full border border-primary/35 bg-primary/15 px-3 py-1 text-sm text-slate-100"
                   >
                     {skill}
                   </span>
@@ -1745,11 +1885,13 @@ function App() {
                 className="cursor-pointer rounded-lg border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,115,212,0.15)]"
                 style={{
                   backgroundColor:
-                    hoveredSubItem === idx ? '#1e2a3a' : '#101922',
+                    hoveredSubItem === idx
+                      ? (isDark ? '#1e2a3a' : '#e8edf3')
+                      : (isDark ? '#101922' : '#f8fafc'),
                   borderColor:
                     hoveredSubItem === idx
                       ? 'rgba(17,115,212,0.5)'
-                      : 'rgba(30,42,58,0.8)',
+                      : (isDark ? 'rgba(30,42,58,0.8)' : 'rgba(203,213,225,0.7)'),
                 }}
                 onMouseEnter={() => setHoveredSubItem(idx)}
                 onMouseLeave={() => setHoveredSubItem(null)}
@@ -1799,7 +1941,9 @@ function App() {
                 className="w-full rounded-lg border border-border p-4 text-left transition-all hover:scale-[1.01]"
                 style={{
                   backgroundColor:
-                    hoveredCertIndex === `modal-${idx}` ? '#1e2a3a' : '#101922',
+                    hoveredCertIndex === `modal-${idx}`
+                      ? (isDark ? '#1e2a3a' : '#e8edf3')
+                      : (isDark ? '#101922' : '#f8fafc'),
                 }}
                 onMouseEnter={() => setHoveredCertIndex(`modal-${idx}`)}
                 onMouseLeave={() => setHoveredCertIndex(null)}
@@ -1819,7 +1963,7 @@ function App() {
 
       {/* ── Competitions dialog ── */}
       <Dialog open={showCompetitionsDialog} onOpenChange={() => { setShowCompetitionsDialog(false); setSelectedCompetition(null); setCompetitionSearch('') }}>
-        <DialogContent className="max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.98),rgba(16,25,34,0.98))] shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+        <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
             <DialogDescription className="text-slate-400">

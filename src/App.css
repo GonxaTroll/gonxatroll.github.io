@@ -74,6 +74,207 @@
   }
 }
 
+.timeline-node-current::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(17, 115, 212, 0.65);
+  pointer-events: none;
+  animation: timeline-node-pulse 2.2s ease-out infinite;
+}
+
+@keyframes timeline-node-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.65);
+    opacity: 0;
+  }
+}
+
+/* ── Theme toggle: Gaussian bell-hop ──────────────────────────────── */
+
+/* Y-values approximate a Gaussian PDF: e^(-((t-0.5)/0.22)^2) scaled to 52px */
+@keyframes theme-bell-hop {
+  0%   { transform: translateY(0px)    scale(1);    }
+  10%  { transform: translateY(-6px)   scale(1.06); }
+  20%  { transform: translateY(-17px)  scale(1.12); }
+  30%  { transform: translateY(-33px)  scale(1.18); }
+  40%  { transform: translateY(-46px)  scale(1.23); }
+  50%  { transform: translateY(-52px)  scale(1.26); }
+  60%  { transform: translateY(-46px)  scale(1.23); }
+  70%  { transform: translateY(-33px)  scale(1.18); }
+  80%  { transform: translateY(-17px)  scale(1.12); }
+  90%  { transform: translateY(-6px)   scale(1.06); }
+  100% { transform: translateY(0px)    scale(1);    }
+}
+
+.theme-icon-hop {
+  animation: theme-bell-hop 650ms cubic-bezier(0.4, 0, 0.6, 1) both;
+}
+
+/* ── Light mode overrides ─────────────────────────────────────────── */
+
+html.light .page-bg {
+  background: #f0f4f8;
+}
+
+html.light .page-glow::before {
+  background: rgba(17, 115, 212, 0.07);
+}
+
+html.light .page-glow::after {
+  background: rgba(17, 115, 212, 0.04);
+}
+
+/* ── Text: make hardcoded "dark-mode light" text readable on light bg ── */
+
+html.light .text-white { color: #1e293b; }
+html.light .hover\:text-white:hover { color: #0f172a; }
+html.light .text-slate-200 { color: #334155; }
+html.light .text-slate-300 { color: #475569; }
+html.light .text-slate-400 { color: #64748b; }
+
+/* ── Nav ──────────────────────────────────────────────────────────── */
+
+html.light nav { border-bottom-color: rgba(0, 0, 0, 0.08); }
+
+/* ── Timeline spine ───────────────────────────────────────────────── */
+
+html.light .timeline-line {
+  background: linear-gradient(
+    180deg,
+    rgba(17, 115, 212, 0.65),
+    rgba(17, 115, 212, 0.25) 35%,
+    rgba(148, 163, 184, 0.3)
+  );
+  box-shadow: 0 0 12px rgba(17, 115, 212, 0.12);
+}
+
+html.light .timeline-line-active {
+  background: linear-gradient(180deg, rgba(17, 115, 212, 0.95), rgba(17, 115, 212, 0.7));
+  box-shadow: 0 0 14px rgba(17, 115, 212, 0.4);
+}
+
+html.light .timeline-connector {
+  background: linear-gradient(90deg, rgba(17, 115, 212, 0.4), rgba(148, 163, 184, 0.25));
+}
+
+/* ── Experience cards: replace dark gradient ─────────────────────── */
+
+html.light .experience-card {
+  background-image: linear-gradient(140deg, #ffffff, #f1f5f9);
+  border-color: rgba(203, 213, 225, 0.8);
+}
+
+/* ── Project / contribution image cards ─────────────────────────── */
+
+/* Named overlay: gradient over image (dark → transparent from bottom) */
+.card-img-overlay {
+  background: linear-gradient(
+    to top,
+    rgba(16, 25, 34, 0.97) 0%,
+    rgba(16, 25, 34, 0.4) 55%,
+    rgba(16, 25, 34, 0.08) 100%
+  );
+}
+html.light .card-img-overlay {
+  /* Stronger gradient in light mode to ensure text readability */
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0.85) 40%,
+    rgba(255, 255, 255, 0.2) 70%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+}
+
+/* ── Tag chips on image cards ────────────────────────────────────── */
+
+.card-chip {
+  border: 1px solid rgba(17, 115, 212, 0.45);
+  background-color: rgba(17, 115, 212, 0.15);
+  color: #f1f5f9;
+}
+html.light .card-chip {
+  border-color: rgba(17, 115, 212, 0.45);
+  background-color: rgba(17, 115, 212, 0.15);
+  color: #1e293b;
+}
+
+/* ── Dialog / modal panels ───────────────────────────────────────── */
+
+.dialog-panel {
+  background: linear-gradient(150deg, rgba(30, 42, 58, 0.97), rgba(16, 25, 34, 0.97));
+}
+html.light .dialog-panel {
+  background: linear-gradient(150deg, #ffffff, #f1f5f9);
+  border-color: rgba(203, 213, 225, 0.7);
+}
+
+/* ── Competition status badge colors ─────────────────────────────── */
+
+/* Slate / practice */
+html.light .bg-slate-700\/40   { background-color: rgba(226, 232, 240, 0.55); }
+html.light .border-slate-600\/60 { border-color: rgba(148, 163, 184, 0.5); }
+
+/* Amber / unfinished */
+html.light .text-amber-400      { color: #92400e; }           /* amber-800 */
+html.light .bg-amber-900\/20    { background-color: #fef3c7; } /* amber-100 */
+html.light .border-amber-600\/40 { border-color: #d97706; }    /* amber-600 */
+
+/* Blue / participated */
+html.light .text-blue-400       { color: #1e40af; }           /* blue-800 */
+html.light .bg-blue-900\/20     { background-color: #dbeafe; } /* blue-100 */
+html.light .border-blue-600\/40  { border-color: #2563eb; }    /* blue-600 */
+
+/* Emerald / ranked + rank number */
+html.light .text-emerald-400    { color: #065f46; }           /* emerald-800 */
+html.light .bg-emerald-900\/20  { background-color: #d1fae5; } /* emerald-100 */
+html.light .border-emerald-600\/40 { border-color: #059669; } /* emerald-600 */
+
+/* Timeline node ring shadow */
+html.light .timeline-node-dot {
+  box-shadow: 0 0 0 6px rgba(148, 163, 184, 0.22);
+}
+
+/* Skill bubbles: stronger blue tint so they read as chips, not invisible */
+html.light .skill-chip,
+html.light .group:hover .skill-chip {
+  background-color: rgba(17, 115, 212, 0.1);
+  border-color: rgba(17, 115, 212, 0.45);
+  color: #1d4ed8;
+}
+
+/* Career timeline + modal skill chips: text-slate-100 is unreadable on light bg */
+html.light .exp-skill-chip {
+  background-color: rgba(17, 115, 212, 0.1);
+  border-color: rgba(17, 115, 212, 0.45);
+  color: #1d4ed8;
+}
+
+/* Card content panel: solid backdrop in light mode for consistent readability
+   The panel uses flexbox with mt-auto, so it stays at bottom with consistent spacing */
+html.light .card-img-bottom {
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(8px);
+  /* Add subtle shadow to separate from image in light mode */
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure hover state maintains opacity in light mode */
+html.light .group:hover .card-img-bottom {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .page-glow::before,
   .page-glow::after {
@@ -82,5 +283,13 @@
 
   .timeline-line-active {
     transition: none;
+  }
+
+  .timeline-node-current::after {
+    animation: none;
+  }
+
+  .theme-icon-hop {
+    animation: none;
   }
 }
