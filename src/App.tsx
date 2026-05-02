@@ -1508,7 +1508,7 @@ function App() {
             {displayedProjects.map((project) => (
               <article
                 key={project.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
+                className="group relative flex h-80 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onClick={() => window.open(project.url, '_blank')}
               >
                 {/* Image with scale on hover */}
@@ -1520,8 +1520,8 @@ function App() {
                 {/* Persistent gradient */}
                 <div className="card-img-overlay absolute inset-0" />
 
-                {/* Bottom content: title, tags, description */}
-                <div className="card-img-bottom absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                {/* Bottom content: title, tags, description - flex-grow pushes to bottom */}
+                <div className="card-img-bottom relative mt-auto flex flex-col rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
@@ -1568,7 +1568,7 @@ function App() {
             {displayedContributions.map((contribution) => (
               <article
                 key={contribution.id}
-                className="group relative h-80 cursor-pointer overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
+                className="group relative flex h-80 cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 transition-all duration-300 hover:border-primary/40 hover:shadow-[0_20px_50px_rgba(17,115,212,0.18)]"
                 onClick={() => {
                   if (contribution.id === 5) {
                     setShowCompetitionsDialog(true)
@@ -1586,8 +1586,8 @@ function App() {
                 {/* Persistent gradient */}
                 <div className="card-img-overlay absolute inset-0" />
 
-                {/* Bottom content: title, tags, description */}
-                <div className="card-img-bottom absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                {/* Bottom content: title, tags, description - flex-grow pushes to bottom */}
+                <div className="card-img-bottom relative mt-auto flex flex-col rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{contribution.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {contribution.tags.map((tag) => (

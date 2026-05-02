@@ -186,11 +186,13 @@ html.light .experience-card {
   );
 }
 html.light .card-img-overlay {
+  /* Stronger gradient in light mode to ensure text readability */
   background: linear-gradient(
     to top,
-    rgba(240, 244, 248, 1.0) 0%,
-    rgba(240, 244, 248, 0.6) 50%,
-    rgba(240, 244, 248, 0.0) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 255, 255, 0.85) 40%,
+    rgba(255, 255, 255, 0.2) 70%,
+    rgba(255, 255, 255, 0.0) 100%
   );
 }
 
@@ -258,10 +260,19 @@ html.light .exp-skill-chip {
   color: #1d4ed8;
 }
 
-/* Card hover text: give the bottom panel a solid light backdrop so
-   description text is readable even where the image shows through */
+/* Card content panel: solid backdrop in light mode for consistent readability
+   The panel uses flexbox with mt-auto, so it stays at bottom with consistent spacing */
 html.light .card-img-bottom {
-  background-color: rgba(240, 244, 248, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.97) !important;
+  backdrop-filter: blur(8px);
+  /* Add subtle shadow to separate from image in light mode */
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure hover state maintains opacity in light mode */
+html.light .group:hover .card-img-bottom {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
 }
 
 @media (prefers-reduced-motion: reduce) {
