@@ -11,6 +11,8 @@ import {
   Download,
   GraduationCap,
   Mail,
+  Moon,
+  Sun,
 } from 'lucide-react'
 
 import './App.css'
@@ -461,6 +463,8 @@ function App() {
     useState<Contribution | null>(null)
   const [hoveredSubItem, setHoveredSubItem] = useState<number | null>(null)
   const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
+  const [isDark, setIsDark] = useState(true)
+  const [themeAnimating, setThemeAnimating] = useState(false)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
   const [kirbySprites, setKirbySprites] = useState<KirbySprite[]>([])
   const [showAllExperiences, setShowAllExperiences] = useState(false)
@@ -497,6 +501,18 @@ function App() {
       }
     >
   >({})
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', !isDark)
+  }, [isDark])
+
+  const handleThemeToggle = () => {
+    if (themeAnimating) return
+    setThemeAnimating(true)
+    // Icon swaps at the peak of the Gaussian arc (midpoint)
+    setTimeout(() => setIsDark((d) => !d), 310)
+    setTimeout(() => setThemeAnimating(false), 650)
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -880,6 +896,14 @@ function App() {
 
   return (
     <div className="page-bg isolate min-h-screen text-foreground">
+      {/* Skip link — keyboard/screen-reader users jump straight to content */}
+      <a
+        href="#about"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:outline-none focus:ring-2 focus:ring-primary/60 focus:ring-offset-2 focus:ring-offset-background"
+      >
+        Skip to main content
+      </a>
+
       <div aria-hidden="true" className="page-glow pointer-events-none fixed inset-0 -z-10" />
 
       {/* Floating Kirby easter egg */}
@@ -931,7 +955,7 @@ function App() {
                 <button
                   key={item}
                   type="button"
-                  className="relative rounded-md px-3 py-1.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
+                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
                   onClick={() => scrollToId(item)}
                 >
                   {item}
@@ -940,7 +964,67 @@ function App() {
             )}
           </div>
 
-          <div className="w-40" aria-hidden="true" />
+          <div className="flex w-40 items-center justify-end">
+            <button
+              type="button"
+              onClick={handleThemeToggle}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="group relative flex h-11 w-11 items-center justify-center rounded-full border border-border/50 bg-card/40 text-slate-400 backdrop-blur-sm transition-all duration-200 hover:border-primary/50 hover:bg-primary/10 hover:text-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              {/* Gaussian bell curve hint — appears while animating */}
+              {themeAnimating && (
+                <div className="pointer-events-none absolute -top-[3.75rem] left-1/2 flex -translate-x-1/2 flex-col items-center gap-0.5">
+                  <svg
+                    width="76"
+                    height="28"
+                    viewBox="0 0 76 28"
+                    fill="none"
+                    className="overflow-visible drop-shadow-sm"
+                  >
+                    {/* x-axis baseline */}
+                    <line
+                      x1="2"
+                      y1="24"
+                      x2="74"
+                      y2="24"
+                      stroke="rgba(17,115,212,0.25)"
+                      strokeWidth="0.8"
+                    />
+                    {/* Bell curve — Gaussian PDF shape */}
+                    <path
+                      d="M 2,23 C 10,23 14,19 18,13 C 22,7 26,2 38,2 C 50,2 54,7 58,13 C 62,19 66,23 74,23"
+                      stroke="rgba(17,115,212,0.8)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    {/* Moving dot tracing the curve */}
+                    <circle r="2.5" fill="#1173d4">
+                      <animateMotion
+                        dur="0.65s"
+                        repeatCount="1"
+                        fill="freeze"
+                        path="M 2,23 C 10,23 14,19 18,13 C 22,7 26,2 38,2 C 50,2 54,7 58,13 C 62,19 66,23 74,23"
+                      />
+                    </circle>
+                  </svg>
+                  <span className="font-mono text-[9px] tracking-tight text-primary/70">
+                    ~N(0,1)
+                  </span>
+                </div>
+              )}
+
+              {/* Icon — hops along the bell curve path */}
+              <span
+                className={`flex items-center justify-center ${themeAnimating ? 'theme-icon-hop' : ''}`}
+              >
+                {isDark ? (
+                  <Sun className="h-3.5 w-3.5" />
+                ) : (
+                  <Moon className="h-3.5 w-3.5" />
+                )}
+              </span>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -957,7 +1041,7 @@ function App() {
               <button
                 type="button"
                 aria-label="Secret"
-                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary sm:h-64 sm:w-64"
+                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:h-64 sm:w-64"
                 onClick={spawnKirby}
               >
                 <img
@@ -1145,7 +1229,7 @@ function App() {
                         {sub.skills.map((skill) => (
                           <span
                             key={skill}
-                            className="rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-slate-300 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/[0.13] group-hover:text-slate-200"
+                            className="skill-chip rounded-full border border-primary/20 bg-primary/10 px-2 py-0.5 text-xs text-slate-300 transition-colors duration-200 group-hover:border-primary/30 group-hover:bg-primary/[0.13] group-hover:text-slate-200"
                           >
                             {skill}
                           </span>
@@ -1247,11 +1331,13 @@ function App() {
                     />
 
                     <div
-                      className={`absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
+                      className={`timeline-node-dot absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
                         hoveredExp === exp.id ? 'scale-110' : 'scale-100'
                       } ${index === 0 ? 'timeline-node-current' : ''}`}
                       style={{
-                        backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
+                        backgroundColor: index === 0
+                          ? '#1173d4'
+                          : (isDark ? '#1e2a3a' : '#e2e8f0'),
                       }}
                     >
                       <Briefcase
@@ -1262,7 +1348,7 @@ function App() {
 
                     <button
                       type="button"
-                      className="w-full text-left md:w-[calc(50%-2.25rem)]"
+                      className="group/card w-full text-left focus-visible:outline-none md:w-[calc(50%-2.25rem)]"
                       ref={(element) => {
                         experienceCardRefs.current[exp.id] = element
                       }}
@@ -1271,7 +1357,7 @@ function App() {
                       onMouseLeave={() => setHoveredExp(null)}
                       onClick={() => setSelectedExp(exp)}
                     >
-                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] focus-visible:border-primary/70">
+                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-primary">{exp.company}</p>
                           <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
@@ -1378,16 +1464,16 @@ function App() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Persistent gradient */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+                <div className="card-img-overlay absolute inset-0" />
 
                 {/* Bottom content: title, tags, description */}
-                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                <div className="card-img-bottom absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{project.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {project.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
+                        className="card-chip rounded-full px-2.5 py-0.5 text-xs"
                       >
                         {tag}
                       </span>
@@ -1444,16 +1530,16 @@ function App() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {/* Persistent gradient */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,25,34,0.97)_0%,rgba(16,25,34,0.4)_55%,rgba(16,25,34,0.08)_100%)]" />
+                <div className="card-img-overlay absolute inset-0" />
 
                 {/* Bottom content: title, tags, description */}
-                <div className="absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
+                <div className="card-img-bottom absolute inset-x-0 bottom-0 rounded-b-2xl p-6 transition-colors duration-500 group-hover:bg-[#0d1620]/80">
                   <h3 className="text-xl font-bold text-white">{contribution.title}</h3>
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {contribution.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="rounded-full border border-white/20 bg-[#0d1620]/90 px-2.5 py-0.5 text-xs text-slate-200"
+                        className="card-chip rounded-full px-2.5 py-0.5 text-xs"
                       >
                         {tag}
                       </span>
@@ -1650,7 +1736,7 @@ function App() {
 
       <Dialog open={showEducationDialog} onOpenChange={() => setShowEducationDialog(false)}>
         <DialogContent
-          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1679,7 +1765,7 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="max-w-2xl border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.95),rgba(16,25,34,0.95))] shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1745,11 +1831,13 @@ function App() {
                 className="cursor-pointer rounded-lg border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,115,212,0.15)]"
                 style={{
                   backgroundColor:
-                    hoveredSubItem === idx ? '#1e2a3a' : '#101922',
+                    hoveredSubItem === idx
+                      ? (isDark ? '#1e2a3a' : '#e8edf3')
+                      : (isDark ? '#101922' : '#f8fafc'),
                   borderColor:
                     hoveredSubItem === idx
                       ? 'rgba(17,115,212,0.5)'
-                      : 'rgba(30,42,58,0.8)',
+                      : (isDark ? 'rgba(30,42,58,0.8)' : 'rgba(203,213,225,0.7)'),
                 }}
                 onMouseEnter={() => setHoveredSubItem(idx)}
                 onMouseLeave={() => setHoveredSubItem(null)}
@@ -1799,7 +1887,9 @@ function App() {
                 className="w-full rounded-lg border border-border p-4 text-left transition-all hover:scale-[1.01]"
                 style={{
                   backgroundColor:
-                    hoveredCertIndex === `modal-${idx}` ? '#1e2a3a' : '#101922',
+                    hoveredCertIndex === `modal-${idx}`
+                      ? (isDark ? '#1e2a3a' : '#e8edf3')
+                      : (isDark ? '#101922' : '#f8fafc'),
                 }}
                 onMouseEnter={() => setHoveredCertIndex(`modal-${idx}`)}
                 onMouseLeave={() => setHoveredCertIndex(null)}
@@ -1819,7 +1909,7 @@ function App() {
 
       {/* ── Competitions dialog ── */}
       <Dialog open={showCompetitionsDialog} onOpenChange={() => { setShowCompetitionsDialog(false); setSelectedCompetition(null); setCompetitionSearch('') }}>
-        <DialogContent className="max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 bg-[linear-gradient(150deg,rgba(30,42,58,0.98),rgba(16,25,34,0.98))] shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+        <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
             <DialogDescription className="text-slate-400">
