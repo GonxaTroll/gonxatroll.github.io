@@ -1130,7 +1130,7 @@ function App() {
                   <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/40 group-hover:bg-primary/10">
                     <category.icon className="h-3.5 w-3.5 text-slate-400 transition-colors duration-300 group-hover:text-primary/80" />
                   </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 transition-colors duration-300 group-hover:text-primary/90">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200 transition-colors duration-300 group-hover:text-primary/90">
                     {category.name}
                   </p>
                 </div>
@@ -1138,7 +1138,7 @@ function App() {
                 <div className="relative space-y-2.5">
                   {category.subcategories.map((sub) => (
                     <div key={sub.label}>
-                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">
+                      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
                         {sub.label}
                       </p>
                       <div className="flex flex-wrap gap-1">
@@ -1169,9 +1169,9 @@ function App() {
           />
 
           <div className="relative" ref={experienceTimelineRef}>
-            <div className="timeline-line absolute bottom-0 left-6 top-0 w-px md:left-1/2 md:-translate-x-1/2" />
+            <div className="timeline-line absolute bottom-0 left-6 top-0 w-[2px] md:left-1/2 md:-translate-x-1/2" />
             <div
-              className="timeline-line-active pointer-events-none absolute left-6 w-px md:left-1/2 md:-translate-x-1/2"
+              className="timeline-line-active pointer-events-none absolute left-6 w-[2px] md:left-1/2 md:-translate-x-1/2"
               style={{
                 height: `${activeTimelineHeight}px`,
                 opacity: activeTimelineHeight > 0 ? 1 : 0,
@@ -1230,7 +1230,7 @@ function App() {
                     )}
 
                     <div
-                      className={`timeline-connector absolute top-12 hidden h-px w-8 md:block ${
+                      className={`timeline-connector absolute top-12 hidden h-[2px] w-8 md:block ${
                         isRight ? 'left-1/2 ml-6' : 'right-1/2 mr-6'
                       }`}
                       style={{
@@ -1249,7 +1249,7 @@ function App() {
                     <div
                       className={`absolute left-0 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border-4 border-background shadow-[0_0_0_6px_rgba(16,25,34,0.45)] transition-transform md:left-1/2 md:-translate-x-1/2 ${
                         hoveredExp === exp.id ? 'scale-110' : 'scale-100'
-                      }`}
+                      } ${index === 0 ? 'timeline-node-current' : ''}`}
                       style={{
                         backgroundColor: index === 0 ? '#1173d4' : '#1e2a3a',
                       }}
