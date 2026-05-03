@@ -41,8 +41,8 @@
 .pub-card {
   padding: 14px 16px;
   border-radius: 10px;
-  border: 1px solid rgba(48, 54, 61, 0.9);
-  background: #0d1117;
+  border: 1px solid rgba(30, 42, 58, 0.8);
+  background: var(--background);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
   text-align: left;
@@ -50,8 +50,8 @@
   font: inherit;
 }
 .pub-card:hover {
-  border-color: rgba(88, 166, 255, 0.35);
-  background: #1c2128;
+  border-color: rgba(17, 115, 212, 0.35);
+  background: var(--card);
 }
 .pub-card-title {
   font-size: 13px;
@@ -67,7 +67,7 @@
 .pub-card-link {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #58a6ff;
+  color: var(--primary);
   margin-top: 7px;
   display: flex;
   align-items: center;
@@ -79,8 +79,8 @@
 .comp-item {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(48, 54, 61, 0.9);
-  background: #0d1117;
+  border: 1px solid rgba(30, 42, 58, 0.8);
+  background: var(--background);
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
   text-align: left;
@@ -88,8 +88,8 @@
   font: inherit;
 }
 .comp-item:hover {
-  border-color: rgba(88, 166, 255, 0.35);
-  background: #1c2128;
+  border-color: rgba(17, 115, 212, 0.35);
+  background: var(--card);
 }
 .comp-item-head {
   display: flex;
@@ -130,9 +130,9 @@
 /* Comp detail */
 .comp-detail {
   padding: 20px;
-  border: 1px solid rgba(48, 54, 61, 0.9);
+  border: 1px solid rgba(30, 42, 58, 0.8);
   border-radius: 10px;
-  background: #0d1117;
+  background: var(--background);
 }
 
 /* Modal section label + skill chips */
@@ -140,7 +140,7 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;
   font-weight: 600;
-  color: #58a6ff;
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   margin-bottom: 9px;
@@ -149,11 +149,11 @@
 .modal-skill {
   padding: 4px 11px;
   border-radius: 5px;
-  border: 1px solid rgba(88, 166, 255, 0.2);
-  background: rgba(88, 166, 255, 0.08);
+  border: 1px solid rgba(17, 115, 212, 0.2);
+  background: rgba(17, 115, 212, 0.08);
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: #9ecbff;
+  color: #a0c7ee;
 }
 
 html.light .comp-item { border-color: rgba(203,213,225,0.8); background: #f8fafc; }
@@ -179,22 +179,22 @@ html.light .pub-card-link  { color: #1173d4; }
 
 /* Credential cards — new design */
 .cert-card-v2 {
-  border: 1px solid rgba(48, 54, 61, 0.9);
+  border: 1px solid rgba(30, 42, 58, 0.8);
   border-radius: 10px;
-  background: #161b22;
+  background: var(--card);
   padding: 16px;
   transition: border-color 0.2s, background 0.2s;
 }
 .cert-card-v2:hover {
-  border-color: rgba(88, 166, 255, 0.35);
-  background: #1c2128;
+  border-color: rgba(17, 115, 212, 0.35);
+  background: var(--secondary);
 }
 .cert-item-v2 {
   display: flex;
   gap: 8px;
   align-items: flex-start;
   padding: 7px 0;
-  border-top: 1px solid rgba(48, 54, 61, 0.9);
+  border-top: 1px solid rgba(30, 42, 58, 0.8);
   cursor: pointer;
   text-align: left;
   width: 100%;
@@ -218,7 +218,7 @@ html.light .pub-card-link  { color: #1173d4; }
   transition: color 0.15s;
 }
 .cert-item-v2:hover .cert-name-v2 {
-  color: #58a6ff;
+  color: var(--primary);
 }
 
 /* Two drifting orbs rendered as pseudo-elements inside the fixed .page-glow div */

@@ -1355,7 +1355,7 @@ function App() {
                     )}
                     {showYearBadge && (
                       <span
-                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-slate-600/70 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
+                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-border/60 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
                           isRight
                             ? 'left-1/2 -translate-x-[calc(100%+3.4rem)]'
                             : 'left-1/2 translate-x-[3.4rem]'
@@ -1409,7 +1409,7 @@ function App() {
                       onMouseLeave={() => setHoveredExp(null)}
                       onClick={() => setSelectedExp(exp)}
                     >
-                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
+                      <div className="experience-card rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-primary">{exp.company}</p>
                           <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
@@ -1633,7 +1633,7 @@ function App() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Academic</p>
             <button
               type="button"
-              className="group flex w-full items-center gap-5 rounded-2xl border border-border/60 bg-card/60 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)]"
+              className="group flex w-full items-center gap-5 rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)]"
               onClick={() => setShowEducationDialog(true)}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/60 bg-card/60">
@@ -1890,13 +1890,13 @@ function App() {
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 14 }}>
                     <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e6edf3' }}>{selectedCompetition.name}</h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#6e7681', border: '1px solid rgba(48,54,61,0.9)', padding: '2px 8px', borderRadius: 5, background: '#161b22' }}>{selectedCompetition.date}</span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#6e7681', border: '1px solid rgba(30, 42, 58, 0.8)', padding: '2px 8px', borderRadius: 5, background: 'var(--card)' }}>{selectedCompetition.date}</span>
                       <span className={`comp-status-${selectedCompetition.status}`}>{selectedCompetition.status}</span>
                       {selectedCompetition.rank !== null && (
                         <>
-                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 700, color: '#3fb950' }}>#{selectedCompetition.rank} / {selectedCompetition.totalParticipants?.toLocaleString()}</span>
+                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 700, color: '#3fb950' }}>#{selectedCompetition.rank} / {selectedCompetition.totalParticipants}</span>
                           {selectedCompetition.totalParticipants && (
-                            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: '#58a6ff', border: '1px solid rgba(88,166,255,0.35)', padding: '2px 8px', borderRadius: 5, background: 'rgba(88,166,255,0.12)' }}>
+                            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--primary)', border: '1px solid rgba(17, 115, 212, 0.35)', padding: '2px 8px', borderRadius: 5, background: 'rgba(17, 115, 212, 0.12)' }}>
                               Top {Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%
                             </span>
                           )}
@@ -1974,7 +1974,7 @@ function App() {
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
                               {comp.approach.map((a) => <span key={a} className="comp-tag">{a}</span>)}
                             </div>
-                            {comp.rank !== null && <span className="comp-rank">#{comp.rank}/{comp.totalParticipants?.toLocaleString()}</span>}
+                            {comp.rank !== null && <span className="comp-rank">#{comp.rank}/{comp.totalParticipants}</span>}
                           </div>
                         </button>
                       ))}
