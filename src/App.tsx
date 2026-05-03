@@ -472,8 +472,8 @@ function SectionHeader({ label, title, description }: { label: string; title: st
   return (
     <div className="mb-16 text-center">
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">{label}</p>
-      <h2 className="text-4xl font-bold text-white sm:text-5xl">{title}</h2>
-      <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300">{description}</p>
+      <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">{title}</h2>
+      <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-200">{description}</p>
     </div>
   )
 }
@@ -975,7 +975,7 @@ function App() {
                 <button
                   key={item}
                   type="button"
-                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
+                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-300 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
                   onClick={() => scrollToId(item)}
                 >
                   {item}
@@ -1103,16 +1103,16 @@ function App() {
               {/* Quick stats */}
               <div className="grid w-full grid-cols-3 gap-2">
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">4+</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Yrs Exp.</p>
+                  <p className="stat-num text-2xl font-bold text-white">4+</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Yrs Exp.</p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">3</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Companies</p>
+                  <p className="stat-num text-2xl font-bold text-white">3</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Companies</p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">2</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Publications</p>
+                  <p className="stat-num text-2xl font-bold text-white">2</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Publications</p>
                 </div>
               </div>
             </div>
@@ -1126,14 +1126,14 @@ function App() {
                   analytics, working across product and business teams to turn data
                   into measurable outcomes.
                 </p>
-                <p className="mt-4 text-lg leading-relaxed text-slate-300">
+                <p className="mt-4 text-lg leading-relaxed text-slate-200">
                   Skilled in Python, SQL, and ML tooling, with hands-on delivery in
                   dbt/Snowflake pipelines, FastAPI services, and observability
                   systems. I enjoy building robust solutions that improve strategic
                   decision-making.
                 </p>
                 <div className="bio-stack-divider mt-5 border-t border-border/40 pt-5">
-                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
                     Some of my stack
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -1258,23 +1258,24 @@ function App() {
             {skillCategories.map((category) => (
               <div
                 key={category.name}
-                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm"
+                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(17,115,212,0.12)]"
               >
                 {/* inner hover glow */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(17,115,212,0.08) 0%, transparent 70%)' }} />
 
-                <div className="relative mb-3 flex items-center gap-2">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60">
-                    <category.icon className="h-3.5 w-3.5 text-slate-400" />
+                <div className="relative mb-4 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
+                    <category.icon className="h-4 w-4 text-slate-400 transition-colors duration-300 group-hover:text-primary/70" />
                   </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+                  <p className="text-sm font-semibold text-slate-200">
                     {category.name}
                   </p>
                 </div>
 
-                <div className="relative space-y-2.5">
+                <div className="relative space-y-3">
                   {category.subcategories.map((sub) => (
                     <div key={sub.label}>
-                      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                         {sub.label}
                       </p>
                       <div className="flex flex-wrap gap-1">
@@ -1409,18 +1410,18 @@ function App() {
                       onMouseLeave={() => setHoveredExp(null)}
                       onClick={() => setSelectedExp(exp)}
                     >
-                      <div className="experience-card rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
+                      <div className="experience-card rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 shadow-[0_8px_24px_rgba(8,15,24,0.35),0_2px_8px_rgba(17,115,212,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_48px_rgba(8,15,24,0.4),0_4px_20px_rgba(17,115,212,0.22)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_48px_rgba(8,15,24,0.4),0_4px_20px_rgba(17,115,212,0.22)]">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-primary">{exp.company}</p>
-                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-xs font-medium text-slate-300">
                             {exp.period}
                           </span>
                         </div>
 
-                        <h3 className="mt-3 text-2xl font-bold text-white">
+                        <h3 className="mt-3 text-[1.375rem] font-bold leading-snug text-white">
                           {exp.title}
                         </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        <p className="mt-2 text-sm leading-relaxed text-slate-200">
                           {exp.description}
                         </p>
 
@@ -1532,7 +1533,7 @@ function App() {
                     ))}
                   </div>
                   <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
-                    <p className="text-sm leading-relaxed text-slate-300">{project.fullDesc}</p>
+                    <p className="text-sm leading-relaxed text-slate-200">{project.fullDesc}</p>
                     <p className="mt-2 text-xs font-medium text-primary">View on GitHub →</p>
                   </div>
                 </div>
@@ -1598,7 +1599,7 @@ function App() {
                     ))}
                   </div>
                   <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
-                    <p className="text-sm leading-relaxed text-slate-300">{contribution.fullDesc}</p>
+                    <p className="text-sm leading-relaxed text-slate-200">{contribution.fullDesc}</p>
                     <p className="mt-2 text-xs font-medium text-primary">See details →</p>
                   </div>
                 </div>
@@ -1641,7 +1642,7 @@ function App() {
               </div>
               <div className="min-w-0 flex-1 text-left">
                 <p className="text-sm font-semibold text-white">Bachelor's in Data Science</p>
-                <p className="mt-0.5 text-xs text-slate-400">UPV · Universitat Politècnica de València</p>
+                <p className="mt-0.5 text-xs text-slate-300">UPV · Universitat Politècnica de València</p>
               </div>
               <span className="shrink-0 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs text-slate-400">
                 2018 – 2022
@@ -1766,7 +1767,7 @@ function App() {
         >
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Bachelor's in Data Science</DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="text-slate-200">
               UPV · Universitat Politècnica de València | 2018 – 2022
             </DialogDescription>
           </DialogHeader>
@@ -1780,7 +1781,7 @@ function App() {
               ].map((item) => (
                 <li key={item} className="flex gap-2">
                   <span className="mt-0.5 text-primary">▸</span>
-                  <span className="text-slate-300">{item}</span>
+                  <span className="text-slate-200">{item}</span>
                 </li>
               ))}
             </ul>
@@ -1797,7 +1798,7 @@ function App() {
             <DialogTitle className="text-2xl text-white">
               {selectedExp?.title}
             </DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="text-slate-200">
               {selectedExp?.company} | {selectedExp?.period}
             </DialogDescription>
           </DialogHeader>
@@ -1821,12 +1822,12 @@ function App() {
               <h4 className="mb-2 font-semibold text-primary">
                 Key Responsibilities & Achievements
               </h4>
-              <p className="mb-3 text-slate-300">{selectedExp?.description}</p>
+              <p className="mb-3 text-slate-200">{selectedExp?.description}</p>
               <ul className="space-y-2">
                 {selectedExp?.tasks.map((task) => (
                   <li key={task} className="flex gap-2">
                     <span className="mt-0.5 text-primary">▸</span>
-                    <span className="text-slate-300">{task}</span>
+                    <span className="text-slate-200">{task}</span>
                   </li>
                 ))}
               </ul>
@@ -1844,7 +1845,7 @@ function App() {
             <DialogTitle className="text-2xl text-white">
               {selectedContribution?.title}
             </DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogDescription className="text-slate-200">
               {selectedContribution?.fullDesc}
             </DialogDescription>
           </DialogHeader>
@@ -1870,7 +1871,7 @@ function App() {
         <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogDescription className="text-slate-200">
               Kaggle challenges across forecasting, credit risk, and combinatorial optimization.
             </DialogDescription>
           </DialogHeader>
@@ -1881,20 +1882,20 @@ function App() {
               <div>
                 <button
                   type="button"
-                  className="mb-4 flex cursor-pointer items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-slate-200"
+                  className="mb-4 flex cursor-pointer items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-foreground"
                   onClick={() => setSelectedCompetition(null)}
                 >
                   ← Back to list
                 </button>
                 <div className="comp-detail">
                   <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 14 }}>
-                    <h3 style={{ fontSize: 16, fontWeight: 700, color: '#e6edf3' }}>{selectedCompetition.name}</h3>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: isDark ? '#e6edf3' : '#1e293b' }}>{selectedCompetition.name}</h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: '#6e7681', border: '1px solid rgba(30, 42, 58, 0.8)', padding: '2px 8px', borderRadius: 5, background: 'var(--card)' }}>{selectedCompetition.date}</span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: isDark ? '#6e7681' : '#94a3b8', border: `1px solid ${isDark ? 'rgba(30, 42, 58, 0.8)' : 'rgba(203,213,225,0.8)'}`, padding: '2px 8px', borderRadius: 5, background: 'var(--card)' }}>{selectedCompetition.date}</span>
                       <span className={`comp-status-${selectedCompetition.status}`}>{selectedCompetition.status}</span>
                       {selectedCompetition.rank !== null && (
                         <>
-                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 700, color: '#3fb950' }}>#{selectedCompetition.rank} / {selectedCompetition.totalParticipants}</span>
+                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 700, color: isDark ? '#3fb950' : '#166534' }}>#{selectedCompetition.rank} / {selectedCompetition.totalParticipants}</span>
                           {selectedCompetition.totalParticipants && (
                             <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--primary)', border: '1px solid rgba(17, 115, 212, 0.35)', padding: '2px 8px', borderRadius: 5, background: 'rgba(17, 115, 212, 0.12)' }}>
                               Top {Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%
@@ -1904,7 +1905,7 @@ function App() {
                       )}
                     </div>
                   </div>
-                  <p style={{ fontSize: 13, color: '#8b949e', lineHeight: 1.65, marginBottom: 14 }}>{selectedCompetition.description}</p>
+                  <p style={{ fontSize: 13, color: isDark ? '#8b949e' : '#475569', lineHeight: 1.65, marginBottom: 14 }}>{selectedCompetition.description}</p>
                   <div>
                     <div className="modal-section-label">Approach</div>
                     <div className="modal-skills">
@@ -1915,7 +1916,7 @@ function App() {
                   </div>
                   <button
                     type="button"
-                    style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: '#58a6ff', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                    style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: isDark ? '#58a6ff' : '#1173d4', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
                     onClick={() => window.open(selectedCompetition.url, '_blank')}
                   >
                     View on GitHub ↗
@@ -1926,7 +1927,7 @@ function App() {
               /* ── List view ── */
               <div>
                 <div style={{ position: 'relative', marginBottom: 14 }}>
-                  <svg aria-hidden="true" viewBox="0 0 24 24" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, fill: 'none', stroke: '#6e7681', strokeWidth: 2, pointerEvents: 'none' }}>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, fill: 'none', stroke: isDark ? '#6e7681' : '#94a3b8', strokeWidth: 2, pointerEvents: 'none' }}>
                     <circle cx="11" cy="11" r="8" />
                     <path d="m21 21-4.35-4.35" strokeLinecap="round" />
                   </svg>

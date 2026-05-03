@@ -1,3 +1,9 @@
+/* Stat numbers — tabular figures for optical alignment */
+.stat-num {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
 /* Spinning conic ring around the about-me photo */
 .photo-ring {
   position: absolute;
@@ -159,11 +165,16 @@
 html.light .comp-item { border-color: rgba(203,213,225,0.8); background: #f8fafc; }
 html.light .comp-item:hover { border-color: rgba(17,115,212,0.5); background: #f1f5f9; }
 html.light .comp-item-name { color: #1e293b; }
-html.light .comp-item-date { color: #94a3b8; }
-html.light .comp-tag { border-color: rgba(203,213,225,0.8); color: #94a3b8; }
+html.light .comp-item-date { color: #64748b; }
+html.light .comp-rank { color: #166534; }
+html.light .comp-tag { border-color: rgba(148,163,184,0.6); color: #64748b; }
 html.light .comp-detail { border-color: rgba(203,213,225,0.8); background: #f8fafc; }
 html.light .modal-section-label { color: #1173d4; }
 html.light .modal-skill { border-color: rgba(17,115,212,0.25); background: rgba(17,115,212,0.08); color: #1d4ed8; }
+html.light .comp-status-ranked     { color: #166534; background: #dcfce7; border-color: rgba(22,163,74,0.35); }
+html.light .comp-status-practice   { color: #475569; background: #f1f5f9; border-color: rgba(148,163,184,0.5); }
+html.light .comp-status-unfinished { color: #92400e; background: #fef3c7; border-color: rgba(217,119,6,0.4); }
+html.light .comp-status-participated { color: #1e40af; background: #dbeafe; border-color: rgba(37,99,235,0.35); }
 
 html.light .pub-card {
   border-color: rgba(203, 213, 225, 0.8);
