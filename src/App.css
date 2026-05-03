@@ -1,3 +1,17 @@
+/* Spinning conic ring around the about-me photo */
+.photo-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 70%, #58a6ff 100%);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), white calc(100% - 2px));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), white calc(100% - 2px));
+  animation: ring-spin 12s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes ring-spin { to { transform: rotate(360deg); } }
+
 .timeline-line {
   background: linear-gradient(180deg, rgba(17, 115, 212, 0.85), rgba(17, 115, 212, 0.35) 35%, rgba(84, 101, 123, 0.45));
   box-shadow: 0 0 20px rgba(17, 115, 212, 0.22);
@@ -11,7 +25,200 @@
 }
 
 .page-bg {
-  background: #101922;
+  background: #0d1117;
+}
+
+/* Grid overlay — fine blue lines at 60px pitch */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(88, 166, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(88, 166, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Contribution sub-item cards — new design */
+.pub-cards { display: grid; gap: 10px; }
+.pub-card {
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  background: #0d1117;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+}
+.pub-card:hover {
+  border-color: rgba(88, 166, 255, 0.35);
+  background: #1c2128;
+}
+.pub-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #e6edf3;
+  margin-bottom: 5px;
+}
+.pub-card-desc {
+  font-size: 12px;
+  color: #8b949e;
+  line-height: 1.55;
+}
+.pub-card-link {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #58a6ff;
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Competitions modal */
+.comp-list { display: flex; flex-direction: column; gap: 8px; }
+.comp-item {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  background: #0d1117;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+}
+.comp-item:hover {
+  border-color: rgba(88, 166, 255, 0.35);
+  background: #1c2128;
+}
+.comp-item-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+.comp-item-name { font-size: 13px; font-weight: 600; color: #e6edf3; }
+.comp-item-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #6e7681;
+  flex-shrink: 0;
+}
+.comp-item-meta { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.comp-rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #3fb950;
+}
+.comp-status-ranked   { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(63,185,80,0.3);   background: rgba(63,185,80,0.1);   color: #3fb950; }
+.comp-status-practice { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(110,118,129,0.4); background: rgba(110,118,129,0.1); color: #8b949e; }
+.comp-status-unfinished { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(210,153,34,0.3); background: rgba(210,153,34,0.1); color: #d29922; }
+.comp-status-participated { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56,139,253,0.3); background: rgba(56,139,253,0.1); color: #58a6ff; }
+
+/* Approach tags inside comp items */
+.comp-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #6e7681;
+  padding: 1px 6px;
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  border-radius: 4px;
+}
+
+/* Comp detail */
+.comp-detail {
+  padding: 20px;
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  border-radius: 10px;
+  background: #0d1117;
+}
+
+/* Modal section label + skill chips */
+.modal-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #58a6ff;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  margin-bottom: 9px;
+}
+.modal-skills { display: flex; flex-wrap: wrap; gap: 6px; }
+.modal-skill {
+  padding: 4px 11px;
+  border-radius: 5px;
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  background: rgba(88, 166, 255, 0.08);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #9ecbff;
+}
+
+html.light .comp-item { border-color: rgba(203,213,225,0.8); background: #f8fafc; }
+html.light .comp-item:hover { border-color: rgba(17,115,212,0.5); background: #f1f5f9; }
+html.light .comp-item-name { color: #1e293b; }
+html.light .comp-item-date { color: #94a3b8; }
+html.light .comp-tag { border-color: rgba(203,213,225,0.8); color: #94a3b8; }
+html.light .comp-detail { border-color: rgba(203,213,225,0.8); background: #f8fafc; }
+html.light .modal-section-label { color: #1173d4; }
+html.light .modal-skill { border-color: rgba(17,115,212,0.25); background: rgba(17,115,212,0.08); color: #1d4ed8; }
+
+html.light .pub-card {
+  border-color: rgba(203, 213, 225, 0.8);
+  background: #f8fafc;
+}
+html.light .pub-card:hover {
+  border-color: rgba(17, 115, 212, 0.5);
+  background: #f1f5f9;
+}
+html.light .pub-card-title { color: #1e293b; }
+html.light .pub-card-desc  { color: #64748b; }
+html.light .pub-card-link  { color: #1173d4; }
+
+/* Credential cards — new design */
+.cert-card-v2 {
+  border: 1px solid rgba(48, 54, 61, 0.9);
+  border-radius: 10px;
+  background: #161b22;
+  padding: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.cert-card-v2:hover {
+  border-color: rgba(88, 166, 255, 0.35);
+  background: #1c2128;
+}
+.cert-item-v2 {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 7px 0;
+  border-top: 1px solid rgba(48, 54, 61, 0.9);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  background: none;
+  font: inherit;
+}
+.cert-item-v2:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+.cert-bullet-v2 {
+  color: #58a6ff;
+  margin-top: 2px;
+  font-size: 9px;
+  flex-shrink: 0;
+}
+.cert-name-v2 {
+  font-size: 12px;
+  color: #8b949e;
+  line-height: 1.5;
+  transition: color 0.15s;
+}
+.cert-item-v2:hover .cert-name-v2 {
+  color: #58a6ff;
 }
 
 /* Two drifting orbs rendered as pseudo-elements inside the fixed .page-glow div */
@@ -28,7 +235,7 @@
   top: -22vw;
   left: calc(50% - 30vw);
   border-radius: 50%;
-  background: rgba(17, 115, 212, 0.26);
+  background: radial-gradient(circle, rgba(56, 139, 253, 0.18) 0%, transparent 70%);
   filter: blur(90px);
   will-change: transform, opacity;
   animation: orb-a 14s ease-in-out infinite;
@@ -43,7 +250,7 @@
   bottom: -8vw;
   right: -4vw;
   border-radius: 50%;
-  background: rgba(17, 115, 212, 0.13);
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.10) 0%, transparent 70%);
   filter: blur(70px);
   will-change: transform, opacity;
   animation: orb-b 20s ease-in-out infinite;
@@ -124,6 +331,31 @@
 
 html.light .page-bg {
   background: #f0f4f8;
+}
+
+html.light .grid-bg {
+  display: none;
+}
+
+html.light .cert-card-v2 {
+  border-color: rgba(203, 213, 225, 0.8);
+  background: #ffffff;
+}
+html.light .cert-card-v2:hover {
+  border-color: rgba(17, 115, 212, 0.5);
+  background: #f1f5f9;
+}
+html.light .cert-item-v2 {
+  border-top-color: rgba(203, 213, 225, 0.8);
+}
+html.light .cert-bullet-v2 {
+  color: #1173d4;
+}
+html.light .cert-name-v2 {
+  color: #64748b;
+}
+html.light .cert-item-v2:hover .cert-name-v2 {
+  color: #1173d4;
 }
 
 html.light .page-glow::before {
@@ -276,6 +508,10 @@ html.light .group:hover .card-img-bottom {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .photo-ring {
+    animation: none;
+  }
+
   .page-glow::before,
   .page-glow::after {
     animation: none;
