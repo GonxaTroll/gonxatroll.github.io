@@ -1302,7 +1302,7 @@ function App() {
           <SectionHeader
             label="Professional Experience"
             title="Career Timeline"
-            description="Key roles where I built production-ready data products, forecasting systems, and decision intelligence."
+            description="Key roles where I built production-ready data products and forecasting systems."
           />
 
           <div className="relative" ref={experienceTimelineRef}>
@@ -1500,7 +1500,7 @@ function App() {
           <SectionHeader
             label="Selected Work"
             title="Projects"
-            description="A selection of data science projects spanning forecasting, NLP, segmentation, and decision intelligence."
+            description="A selection of data science projects spanning forecasting, NLP and optimization."
           />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
