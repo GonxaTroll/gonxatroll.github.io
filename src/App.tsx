@@ -1761,7 +1761,7 @@ function App() {
 
       <Dialog open={showEducationDialog} onOpenChange={() => setShowEducationDialog(false)}>
         <DialogContent
-          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-3xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1790,7 +1790,7 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-3xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
@@ -1839,7 +1839,7 @@ function App() {
         open={!!selectedContribution}
         onOpenChange={() => setSelectedContribution(null)}
       >
-        <DialogContent className="dialog-panel max-h-[80vh] max-w-2xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+        <DialogContent className="dialog-panel max-h-[80vh] max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">
               {selectedContribution?.title}
@@ -1867,7 +1867,7 @@ function App() {
 
       {/* ── Competitions dialog ── */}
       <Dialog open={showCompetitionsDialog} onOpenChange={() => { setShowCompetitionsDialog(false); setSelectedCompetition(null); setCompetitionSearch('') }}>
-        <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-2xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
+        <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
             <DialogDescription className="text-slate-400">
