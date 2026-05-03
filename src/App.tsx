@@ -504,6 +504,7 @@ function App() {
   const skillRowRefs = useRef<Record<number, HTMLDivElement | null>>({})
   const experienceTimelineRef = useRef<HTMLDivElement | null>(null)
   const experienceCardRefs = useRef<Record<number, HTMLButtonElement | null>>({})
+  const profilePhotoRef = useRef<HTMLButtonElement>(null)
   const kirbyIdRef = useRef(1)
   const kirbyDragRef = useRef<
     Record<
@@ -682,8 +683,13 @@ function App() {
 
     const spriteSize = 80
     const margin = 16
-    const startX = Math.max(window.innerWidth - spriteSize - margin, margin)
-    const startY = Math.min(120, window.innerHeight - spriteSize - margin)
+    const photoRect = profilePhotoRef.current?.getBoundingClientRect()
+    const startX = photoRect
+      ? Math.min(photoRect.right + margin, window.innerWidth - spriteSize - margin)
+      : Math.max(window.innerWidth - spriteSize - margin, margin)
+    const startY = photoRect
+      ? Math.max(photoRect.top, margin)
+      : Math.min(120, window.innerHeight - spriteSize - margin)
 
     const sprite: KirbySprite = {
       id: kirbyIdRef.current,
@@ -932,7 +938,7 @@ function App() {
           key={sprite.id}
           type="button"
           style={{ left: sprite.x, top: sprite.y }}
-          className="fixed z-[200] cursor-grab active:cursor-grabbing"
+          className="kirby-spawn fixed z-[200] cursor-grab active:cursor-grabbing"
           onPointerDown={(event) => handleKirbyPointerDown(sprite.id, event)}
           onPointerMove={(event) => handleKirbyPointerMove(sprite.id, event)}
           onPointerUp={(event) => releaseKirby(sprite.id, event)}
@@ -1062,6 +1068,7 @@ function App() {
                 <div aria-hidden="true" className="photo-ring" />
                 <button
                   type="button"
+                  ref={profilePhotoRef}
                   aria-label="Secret"
                   className="relative z-10 h-56 w-56 overflow-hidden rounded-full border-2 border-primary/40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:h-64 sm:w-64"
                   onClick={spawnKirby}
@@ -1082,7 +1089,7 @@ function App() {
                   Gonzalo Candel
                 </h1>
                 <p className="mt-1.5 text-lg text-primary">
-                  Data Scientist · ML &amp; Optimization
+                  Data Scientist
                 </p>
                 <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-sm text-slate-400">
                   <span className="flex items-center gap-1">
