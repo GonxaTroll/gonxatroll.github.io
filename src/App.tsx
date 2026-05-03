@@ -4,7 +4,6 @@ import {
   Brain,
   Briefcase,
   ChevronDown,
-  ChevronLeft,
   ChevronRight,
   Cpu,
   Database,
@@ -473,8 +472,8 @@ function SectionHeader({ label, title, description }: { label: string; title: st
   return (
     <div className="mb-16 text-center">
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">{label}</p>
-      <h2 className="text-4xl font-bold text-white sm:text-5xl">{title}</h2>
-      <p className="mx-auto mt-4 max-w-3xl text-lg text-slate-300">{description}</p>
+      <h2 className="text-4xl font-bold tracking-tight text-white sm:text-5xl">{title}</h2>
+      <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-200">{description}</p>
     </div>
   )
 }
@@ -486,8 +485,6 @@ function App() {
 
   const [selectedContribution, setSelectedContribution] =
     useState<Contribution | null>(null)
-  const [hoveredSubItem, setHoveredSubItem] = useState<number | null>(null)
-  const [hoveredCertIndex, setHoveredCertIndex] = useState<string | null>(null)
   const [isDark, setIsDark] = useState(true)
   const [themeAnimating, setThemeAnimating] = useState(false)
   const [showStickyHeader, setShowStickyHeader] = useState(false)
@@ -495,13 +492,10 @@ function App() {
   const [showAllExperiences, setShowAllExperiences] = useState(false)
   const [showAllProjects, setShowAllProjects] = useState(false)
   const [showAllContributions, setShowAllContributions] = useState(false)
-  const [selectedProviderCerts, setSelectedProviderCerts] =
-    useState<CertificationProvider | null>(null)
   const [showEducationDialog, setShowEducationDialog] = useState(false)
   const [showCompetitionsDialog, setShowCompetitionsDialog] = useState(false)
   const [selectedCompetition, setSelectedCompetition] = useState<Competition | null>(null)
   const [competitionSearch, setCompetitionSearch] = useState('')
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set())
   const [visibleSkillCountByExp, setVisibleSkillCountByExp] = useState<
     Record<number, number>
   >({})
@@ -929,6 +923,7 @@ function App() {
         Skip to main content
       </a>
 
+      <div aria-hidden="true" className="grid-bg pointer-events-none fixed inset-0 -z-20" />
       <div aria-hidden="true" className="page-glow pointer-events-none fixed inset-0 -z-10" />
 
       {/* Floating Kirby easter egg */}
@@ -980,7 +975,7 @@ function App() {
                 <button
                   key={item}
                   type="button"
-                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-400 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
+                  className="relative rounded-md px-3 py-2.5 capitalize text-slate-300 transition-colors duration-200 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 focus-visible:ring-offset-background after:absolute after:bottom-0 after:left-3 after:right-3 after:h-px after:origin-left after:scale-x-0 after:bg-primary after:transition-transform after:duration-200 hover:after:scale-x-100"
                   onClick={() => scrollToId(item)}
                 >
                   {item}
@@ -1063,18 +1058,21 @@ function App() {
             {/* Left: photo + name + stats */}
             <div className="flex flex-col items-center gap-6 lg:h-full lg:justify-between">
               {/* Photo frame — click for easter egg */}
-              <button
-                type="button"
-                aria-label="Secret"
-                className="relative h-56 w-56 overflow-hidden rounded-full border-4 border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:h-64 sm:w-64"
-                onClick={spawnKirby}
-              >
-                <img
-                  src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
-                  alt="Gonzalo Candel"
-                  className="h-full w-full object-cover"
-                />
-              </button>
+              <div className="relative">
+                <div aria-hidden="true" className="photo-ring" />
+                <button
+                  type="button"
+                  aria-label="Secret"
+                  className="relative z-10 h-56 w-56 overflow-hidden rounded-full border-2 border-primary/40 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/60 focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:h-64 sm:w-64"
+                  onClick={spawnKirby}
+                >
+                  <img
+                    src={resolveAssetUrl('/images/design-mode/about_me_screen.png')}
+                    alt="Gonzalo Candel"
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+              </div>
 
               {/* Kirby easter egg — click photo to summon */}
 
@@ -1105,16 +1103,16 @@ function App() {
               {/* Quick stats */}
               <div className="grid w-full grid-cols-3 gap-2">
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">4+</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Yrs Exp.</p>
+                  <p className="stat-num text-2xl font-bold text-white">4+</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Yrs Exp.</p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">3</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Companies</p>
+                  <p className="stat-num text-2xl font-bold text-white">3</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Companies</p>
                 </div>
                 <div className="rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-3 text-center backdrop-blur-sm">
-                  <p className="text-xl font-bold text-white">2</p>
-                  <p className="mt-0.5 text-[11px] text-slate-400">Publications</p>
+                  <p className="stat-num text-2xl font-bold text-white">2</p>
+                  <p className="mt-0.5 text-xs text-slate-400">Publications</p>
                 </div>
               </div>
             </div>
@@ -1128,14 +1126,14 @@ function App() {
                   analytics, working across product and business teams to turn data
                   into measurable outcomes.
                 </p>
-                <p className="mt-4 text-lg leading-relaxed text-slate-300">
+                <p className="mt-4 text-lg leading-relaxed text-slate-200">
                   Skilled in Python, SQL, and ML tooling, with hands-on delivery in
                   dbt/Snowflake pipelines, FastAPI services, and observability
                   systems. I enjoy building robust solutions that improve strategic
                   decision-making.
                 </p>
                 <div className="bio-stack-divider mt-5 border-t border-border/40 pt-5">
-                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                  <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
                     Some of my stack
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -1260,23 +1258,24 @@ function App() {
             {skillCategories.map((category) => (
               <div
                 key={category.name}
-                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-4 backdrop-blur-sm"
+                className="group relative overflow-hidden rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_32px_rgba(17,115,212,0.12)]"
               >
                 {/* inner hover glow */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(17,115,212,0.08) 0%, transparent 70%)' }} />
 
-                <div className="relative mb-3 flex items-center gap-2">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60">
-                    <category.icon className="h-3.5 w-3.5 text-slate-400" />
+                <div className="relative mb-4 flex items-center gap-2.5">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 transition-colors duration-300 group-hover:border-primary/30 group-hover:bg-primary/10">
+                    <category.icon className="h-4 w-4 text-slate-400 transition-colors duration-300 group-hover:text-primary/70" />
                   </div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-200">
+                  <p className="text-sm font-semibold text-slate-200">
                     {category.name}
                   </p>
                 </div>
 
-                <div className="relative space-y-2.5">
+                <div className="relative space-y-3">
                   {category.subcategories.map((sub) => (
                     <div key={sub.label}>
-                      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">
+                      <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
                         {sub.label}
                       </p>
                       <div className="flex flex-wrap gap-1">
@@ -1303,7 +1302,7 @@ function App() {
           <SectionHeader
             label="Professional Experience"
             title="Career Timeline"
-            description="Key roles where I built production-ready data products, forecasting systems, and decision intelligence."
+            description="Key roles where I built production-ready data products and forecasting systems."
           />
 
           <div className="relative" ref={experienceTimelineRef}>
@@ -1357,7 +1356,7 @@ function App() {
                     )}
                     {showYearBadge && (
                       <span
-                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-slate-600/70 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
+                        className={`absolute top-[2.1rem] z-10 hidden rounded-full border border-border/60 bg-background/85 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 md:block ${
                           isRight
                             ? 'left-1/2 -translate-x-[calc(100%+3.4rem)]'
                             : 'left-1/2 translate-x-[3.4rem]'
@@ -1411,18 +1410,18 @@ function App() {
                       onMouseLeave={() => setHoveredExp(null)}
                       onClick={() => setSelectedExp(exp)}
                     >
-                      <div className="experience-card rounded-2xl border border-slate-700/70 bg-[linear-gradient(140deg,rgba(30,42,58,0.78),rgba(16,25,34,0.7))] p-5 shadow-[0_16px_40px_rgba(0,0,0,0.25)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_50px_rgba(17,115,212,0.2)]">
+                      <div className="experience-card rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 p-5 shadow-[0_8px_24px_rgba(8,15,24,0.35),0_2px_8px_rgba(17,115,212,0.06)] backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_48px_rgba(8,15,24,0.4),0_4px_20px_rgba(17,115,212,0.22)] group-focus-visible/card:border-primary/70 group-focus-visible/card:shadow-[0_20px_48px_rgba(8,15,24,0.4),0_4px_20px_rgba(17,115,212,0.22)]">
                         <div className="flex items-start justify-between gap-3">
                           <p className="text-sm font-semibold text-primary">{exp.company}</p>
-                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                          <span className="rounded-full border border-primary/35 bg-primary/10 px-3 py-1 text-xs font-medium text-slate-300">
                             {exp.period}
                           </span>
                         </div>
 
-                        <h3 className="mt-3 text-2xl font-bold text-white">
+                        <h3 className="mt-3 text-[1.375rem] font-bold leading-snug text-white">
                           {exp.title}
                         </h3>
-                        <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                        <p className="mt-2 text-sm leading-relaxed text-slate-200">
                           {exp.description}
                         </p>
 
@@ -1501,7 +1500,7 @@ function App() {
           <SectionHeader
             label="Selected Work"
             title="Projects"
-            description="A selection of data science projects spanning forecasting, NLP, segmentation, and decision intelligence."
+            description="A selection of data science projects spanning forecasting, NLP and optimization."
           />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -1534,7 +1533,7 @@ function App() {
                     ))}
                   </div>
                   <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
-                    <p className="text-sm leading-relaxed text-slate-300">{project.fullDesc}</p>
+                    <p className="text-sm leading-relaxed text-slate-200">{project.fullDesc}</p>
                     <p className="mt-2 text-xs font-medium text-primary">View on GitHub →</p>
                   </div>
                 </div>
@@ -1600,7 +1599,7 @@ function App() {
                     ))}
                   </div>
                   <div className="max-h-0 overflow-hidden transition-all duration-500 ease-in-out group-hover:max-h-40 group-hover:mt-3">
-                    <p className="text-sm leading-relaxed text-slate-300">{contribution.fullDesc}</p>
+                    <p className="text-sm leading-relaxed text-slate-200">{contribution.fullDesc}</p>
                     <p className="mt-2 text-xs font-medium text-primary">See details →</p>
                   </div>
                 </div>
@@ -1635,7 +1634,7 @@ function App() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Academic</p>
             <button
               type="button"
-              className="group flex w-full items-center gap-5 rounded-2xl border border-border/60 bg-card/60 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)]"
+              className="group flex w-full items-center gap-5 rounded-2xl border border-border/60 bg-gradient-to-b from-card/80 to-card/40 px-6 py-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-[0_20px_50px_rgba(17,115,212,0.2)]"
               onClick={() => setShowEducationDialog(true)}
             >
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-border/60 bg-card/60">
@@ -1643,7 +1642,7 @@ function App() {
               </div>
               <div className="min-w-0 flex-1 text-left">
                 <p className="text-sm font-semibold text-white">Bachelor's in Data Science</p>
-                <p className="mt-0.5 text-xs text-slate-400">UPV · Universitat Politècnica de València</p>
+                <p className="mt-0.5 text-xs text-slate-300">UPV · Universitat Politècnica de València</p>
               </div>
               <span className="shrink-0 rounded-full border border-border/60 bg-background/60 px-3 py-1 text-xs text-slate-400">
                 2018 – 2022
@@ -1677,55 +1676,28 @@ function App() {
           {/* Credentials */}
           <div>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.28em] text-primary/90">Credentials</p>
-            <div className="grid max-w-xl gap-3 sm:grid-cols-2 md:grid-cols-3">
+            <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
               {certificationsByProvider.map((provider) => (
-                <div
-                  key={provider.provider}
-                  className="rounded-xl border border-border/60 bg-card/60 p-3 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_8px_30px_rgba(17,115,212,0.12)]"
-                >
-                  <div className="mb-2 flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center">
-                      <img
-                        src={resolveAssetUrl(provider.logo)}
-                        alt={provider.provider}
-                        className="max-h-8 max-w-8 object-contain"
-                      />
-                    </div>
-                    <h3 className="text-xs font-bold text-white">{provider.provider}</h3>
+                <div key={provider.provider} className="cert-card-v2">
+                  <div className="mb-3 flex items-center gap-2.5">
+                    <img
+                      src={resolveAssetUrl(provider.logo)}
+                      alt={provider.provider}
+                      className="h-7 w-7 object-contain"
+                    />
+                    <h3 className="text-xs font-semibold text-white">{provider.provider}</h3>
                   </div>
-                  <div className="space-y-1">
-                    {provider.certifications.slice(0, 2).map((cert, idx) => (
-                      <button
-                        key={cert.name}
-                        type="button"
-                        className="w-full cursor-pointer rounded-md px-2 py-1.5 text-left transition-all duration-200"
-                        style={{
-                          backgroundColor:
-                            hoveredCertIndex === `${provider.provider}-${idx}`
-                              ? 'rgba(17,115,212,0.18)'
-                              : 'transparent',
-                          borderLeft:
-                            hoveredCertIndex === `${provider.provider}-${idx}`
-                              ? '2px solid #1173d4'
-                              : '2px solid transparent',
-                        }}
-                        onMouseEnter={() => setHoveredCertIndex(`${provider.provider}-${idx}`)}
-                        onMouseLeave={() => setHoveredCertIndex(null)}
-                        onClick={() => window.open(cert.url, '_blank')}
-                      >
-                        <span className="line-clamp-2 text-xs text-slate-400">{cert.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                  {provider.certifications.length > 2 && (
+                  {provider.certifications.map((cert) => (
                     <button
+                      key={cert.name}
                       type="button"
-                      className="mt-1.5 w-full text-right text-xs text-primary transition-colors hover:underline"
-                      onClick={() => setSelectedProviderCerts(provider)}
+                      className="cert-item-v2"
+                      onClick={() => window.open(cert.url, '_blank')}
                     >
-                      See more →
+                      <span className="cert-bullet-v2">▸</span>
+                      <span className="cert-name-v2">{cert.name}</span>
                     </button>
-                  )}
+                  ))}
                 </div>
               ))}
             </div>
@@ -1790,12 +1762,12 @@ function App() {
 
       <Dialog open={showEducationDialog} onOpenChange={() => setShowEducationDialog(false)}>
         <DialogContent
-          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-3xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Bachelor's in Data Science</DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="text-slate-200">
               UPV · Universitat Politècnica de València | 2018 – 2022
             </DialogDescription>
           </DialogHeader>
@@ -1809,7 +1781,7 @@ function App() {
               ].map((item) => (
                 <li key={item} className="flex gap-2">
                   <span className="mt-0.5 text-primary">▸</span>
-                  <span className="text-slate-300">{item}</span>
+                  <span className="text-slate-200">{item}</span>
                 </li>
               ))}
             </ul>
@@ -1819,14 +1791,14 @@ function App() {
 
       <Dialog open={!!selectedExp} onOpenChange={() => setSelectedExp(null)}>
         <DialogContent
-          className="dialog-panel max-w-2xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
+          className="dialog-panel max-w-3xl border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.4)]"
           showCloseButton
         >
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">
               {selectedExp?.title}
             </DialogTitle>
-            <DialogDescription className="text-slate-300">
+            <DialogDescription className="text-slate-200">
               {selectedExp?.company} | {selectedExp?.period}
             </DialogDescription>
           </DialogHeader>
@@ -1850,12 +1822,12 @@ function App() {
               <h4 className="mb-2 font-semibold text-primary">
                 Key Responsibilities & Achievements
               </h4>
-              <p className="mb-3 text-slate-300">{selectedExp?.description}</p>
+              <p className="mb-3 text-slate-200">{selectedExp?.description}</p>
               <ul className="space-y-2">
                 {selectedExp?.tasks.map((task) => (
                   <li key={task} className="flex gap-2">
                     <span className="mt-0.5 text-primary">▸</span>
-                    <span className="text-slate-300">{task}</span>
+                    <span className="text-slate-200">{task}</span>
                   </li>
                 ))}
               </ul>
@@ -1868,93 +1840,26 @@ function App() {
         open={!!selectedContribution}
         onOpenChange={() => setSelectedContribution(null)}
       >
-        <DialogContent className="max-h-[80vh] max-w-4xl overflow-y-auto border-border bg-card">
+        <DialogContent className="dialog-panel max-h-[80vh] max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">
               {selectedContribution?.title}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-slate-200">
               {selectedContribution?.fullDesc}
             </DialogDescription>
           </DialogHeader>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {selectedContribution?.subItems.map((item, idx) => (
+          <div className="pub-cards mt-4">
+            {selectedContribution?.subItems.map((item) => (
               <button
                 key={item.name}
                 type="button"
-                className="cursor-pointer rounded-lg border p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(17,115,212,0.15)]"
-                style={{
-                  backgroundColor:
-                    hoveredSubItem === idx
-                      ? (isDark ? '#1e2a3a' : '#e8edf3')
-                      : (isDark ? '#101922' : '#f8fafc'),
-                  borderColor:
-                    hoveredSubItem === idx
-                      ? 'rgba(17,115,212,0.5)'
-                      : (isDark ? 'rgba(30,42,58,0.8)' : 'rgba(203,213,225,0.7)'),
-                }}
-                onMouseEnter={() => setHoveredSubItem(idx)}
-                onMouseLeave={() => setHoveredSubItem(null)}
+                className="pub-card"
                 onClick={() => window.open(item.url, '_blank')}
               >
-                <h4 className="mb-2 font-semibold text-white">{item.name}</h4>
-                <p className="text-sm text-slate-300">{item.description}</p>
-                <p
-                  className="mt-2 text-xs text-primary transition-opacity duration-200"
-                  style={{ opacity: hoveredSubItem === idx ? 1 : 0 }}
-                >
-                  View →
-                </p>
-              </button>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog
-        open={!!selectedProviderCerts}
-        onOpenChange={() => setSelectedProviderCerts(null)}
-      >
-        <DialogContent className="max-h-[80vh] max-w-2xl overflow-y-auto border-border bg-card">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-2xl text-white">
-              {selectedProviderCerts && (
-                <>
-                  <img
-                    src={resolveAssetUrl(selectedProviderCerts.logo)}
-                    alt={selectedProviderCerts.provider}
-                    className="h-10 w-10 object-contain"
-                  />
-                  {selectedProviderCerts.provider} Certifications
-                </>
-              )}
-            </DialogTitle>
-            <DialogDescription>
-              All certifications from {selectedProviderCerts?.provider}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-4 space-y-3">
-            {selectedProviderCerts?.certifications.map((cert, idx) => (
-              <button
-                key={cert.name}
-                type="button"
-                className="w-full rounded-lg border border-border p-4 text-left transition-all hover:scale-[1.01]"
-                style={{
-                  backgroundColor:
-                    hoveredCertIndex === `modal-${idx}`
-                      ? (isDark ? '#1e2a3a' : '#e8edf3')
-                      : (isDark ? '#101922' : '#f8fafc'),
-                }}
-                onMouseEnter={() => setHoveredCertIndex(`modal-${idx}`)}
-                onMouseLeave={() => setHoveredCertIndex(null)}
-                onClick={() => window.open(cert.url, '_blank')}
-              >
-                <p className="font-semibold text-white">{cert.name}</p>
-                {hoveredCertIndex === `modal-${idx}` && (
-                  <p className="mt-2 text-xs text-primary">
-                    Click to view certification →
-                  </p>
-                )}
+                <div className="pub-card-title">{item.name}</div>
+                <div className="pub-card-desc">{item.description}</div>
+                <div className="pub-card-link">Read paper ↗</div>
               </button>
             ))}
           </div>
@@ -1966,206 +1871,120 @@ function App() {
         <DialogContent className="dialog-panel max-h-[85vh] w-full max-w-3xl overflow-y-auto border-primary/30 shadow-[0_24px_70px_rgba(0,0,0,0.5)]">
           <DialogHeader>
             <DialogTitle className="text-2xl text-white">Data Science Competitions</DialogTitle>
-            <DialogDescription className="text-slate-400">
+            <DialogDescription className="text-slate-200">
               Kaggle challenges across forecasting, credit risk, and combinatorial optimization.
             </DialogDescription>
           </DialogHeader>
 
-          {competitionCategories.map((category) => {
-            const isCollapsed = collapsedCategories.has(category.name)
-            const toggleCollapse = () =>
-              setCollapsedCategories((prev) => {
-                const next = new Set(prev)
-                if (next.has(category.name)) next.delete(category.name)
-                else next.add(category.name)
-                return next
-              })
-            return (
-            <div key={category.name} className="mt-2">
-              {/* Category header — click to collapse */}
-              <button
-                type="button"
-                className="mb-4 flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-1 py-1 transition-colors hover:bg-white/5"
-                onClick={toggleCollapse}
-              >
-                <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5 shrink-0 fill-[#20BEFF]">
-                  <path d="M18.825 23.859c-.022.092-.117.141-.281.141h-3.139c-.187 0-.351-.082-.492-.248l-5.178-6.589-1.448 1.374v5.111c0 .235-.117.352-.351.352H5.505c-.236 0-.354-.117-.354-.352V.353c0-.233.118-.353.354-.353h2.431c.234 0 .351.12.351.353v14.343l6.203-6.272c.165-.165.33-.246.495-.246h3.239c.144 0 .236.06.285.18.046.149.034.255-.036.315l-6.555 6.344 6.836 8.507c.095.104.117.208.07.336" />
-                </svg>
-                <span className="text-sm font-semibold text-slate-300">{category.name}</span>
-                <span className="ml-1 rounded-full border border-primary/30 bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                  {category.competitions.length} entries
-                </span>
-                <ChevronDown
-                  className="ml-auto h-4 w-4 text-slate-500 transition-transform duration-200"
-                  style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)' }}
-                />
-              </button>
-
-              {/* Competition list */}
-              {!isCollapsed && selectedCompetition ? (
-                /* ── Detail view ── */
-                <div>
-                  <button
-                    type="button"
-                    className="mb-4 flex cursor-pointer items-center gap-1.5 text-sm text-slate-400 transition-colors hover:text-white"
-                    onClick={() => setSelectedCompetition(null)}
-                  >
-                    <ChevronLeft className="h-4 w-4" /> Back to list
-                  </button>
-                  <div className="rounded-xl border border-border/60 bg-card/50 p-6">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <h3 className="text-xl font-bold text-white">{selectedCompetition.name}</h3>
-                      <div className="flex items-center gap-2">
-                        <span className="rounded-full border border-border/60 bg-background/60 px-2.5 py-1 text-xs text-slate-400">
-                          {selectedCompetition.date}
-                        </span>
-                        {selectedCompetition.status === 'practice' && (
-                          <span className="rounded-full border border-slate-600/60 bg-slate-700/40 px-2.5 py-1 text-xs text-slate-400">Practice</span>
-                        )}
-                        {selectedCompetition.status === 'unfinished' && (
-                          <span className="rounded-full border border-amber-600/40 bg-amber-900/20 px-2.5 py-1 text-xs text-amber-400">Unfinished</span>
-                        )}
-                        {selectedCompetition.status === 'participated' && (
-                          <span className="rounded-full border border-blue-600/40 bg-blue-900/20 px-2.5 py-1 text-xs text-blue-400">Participated</span>
-                        )}
-                        {selectedCompetition.status === 'ranked' && (
-                          <span className="rounded-full border border-emerald-600/40 bg-emerald-900/20 px-2.5 py-1 text-xs text-emerald-400">Ranked</span>
-                        )}
-                        {selectedCompetition.rank !== null && (
-                          <>
-                            <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-white">
-                              #{selectedCompetition.rank} / {selectedCompetition.totalParticipants?.toLocaleString()}
-                            </span>
-                            {selectedCompetition.totalParticipants && (
-                              <span className="rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
-                                Top {Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%
-                              </span>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <p className="mt-5 leading-relaxed text-slate-300">{selectedCompetition.description}</p>
-
-                    <div className="mt-5">
-                      <p className="mb-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">Approach</p>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedCompetition.approach.map((tag) => (
-                          <span key={tag} className="rounded-full border border-primary/35 bg-primary/12 px-3 py-1 text-sm text-slate-200">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="mt-6 flex cursor-pointer items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/80"
-                      onClick={() => window.open(selectedCompetition.url, '_blank')}
-                    >
-                      View on GitHub
-                      <ChevronRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              ) : !isCollapsed ? (
-                /* ── List view ── */
-                <div className="space-y-3">
-                  {/* Search input */}
-                  <div className="relative mb-1">
-                    <svg
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 fill-none stroke-slate-500 stroke-2"
-                    >
-                      <circle cx="11" cy="11" r="8" />
-                      <path d="m21 21-4.35-4.35" strokeLinecap="round" />
-                    </svg>
-                    <input
-                      type="text"
-                      placeholder="Search competitions…"
-                      value={competitionSearch}
-                      onChange={(e) => setCompetitionSearch(e.target.value)}
-                      className="w-full rounded-lg border border-border/60 bg-background/60 py-2 pl-9 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
-                    />
-                  </div>
-
-                  {(() => {
-                    const q = competitionSearch.toLowerCase().trim()
-                    const filtered = q
-                      ? category.competitions.filter(
-                          (c) =>
-                            c.name.toLowerCase().includes(q) ||
-                            c.description.toLowerCase().includes(q) ||
-                            c.approach.some((a) => a.toLowerCase().includes(q)) ||
-                            c.status.toLowerCase().includes(q) ||
-                            c.date.toLowerCase().includes(q),
-                        )
-                      : category.competitions
-
-                    if (filtered.length === 0) {
-                      return (
-                        <p className="py-6 text-center text-sm text-slate-500">
-                          No competitions match &ldquo;{competitionSearch}&rdquo;
-                        </p>
-                      )
-                    }
-
-                    return filtered.map((comp) => (
-                    <button
-                      key={comp.id}
-                      type="button"
-                      className="group/comp w-full cursor-pointer rounded-xl border border-border/60 bg-card/40 px-4 py-3 text-left transition-all duration-200 hover:border-primary/50 hover:bg-card/70 hover:shadow-[0_4px_20px_rgba(17,115,212,0.12)]"
-                      onClick={() => setSelectedCompetition(comp)}
-                    >
-                      <div className="flex items-center justify-between gap-3">
-                        {/* Left: name + status + tags */}
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <h4 className="font-semibold text-white transition-colors duration-200 group-hover/comp:text-primary">
-                              {comp.name}
-                            </h4>
-                            {comp.status === 'practice' && (
-                              <span className="rounded-full border border-slate-600/60 bg-slate-700/40 px-2 py-0.5 text-[10px] text-slate-400">Practice</span>
-                            )}
-                            {comp.status === 'unfinished' && (
-                              <span className="rounded-full border border-amber-600/40 bg-amber-900/20 px-2 py-0.5 text-[10px] text-amber-400">Unfinished</span>
-                            )}
-                            {comp.status === 'participated' && (
-                              <span className="rounded-full border border-blue-600/40 bg-blue-900/20 px-2 py-0.5 text-[10px] text-blue-400">Participated</span>
-                            )}
-                            {comp.status === 'ranked' && (
-                              <span className="rounded-full border border-emerald-600/40 bg-emerald-900/20 px-2 py-0.5 text-[10px] text-emerald-400">Ranked</span>
-                            )}
-                          </div>
-                          <div className="mt-1.5 flex flex-wrap gap-1.5">
-                            {comp.approach.map((tag) => (
-                              <span key={tag} className="rounded-full border border-primary/25 bg-primary/8 px-2 py-0.5 text-xs text-primary/80">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        {/* Right: date + rank + arrow */}
-                        <div className="flex shrink-0 flex-col items-end gap-1">
-                          <span className="text-xs text-slate-500">{comp.date}</span>
-                          {comp.rank !== null && (
-                            <span className="text-xs font-semibold text-emerald-400">
-                              #{comp.rank} / {comp.totalParticipants?.toLocaleString()}
+          <div className="mt-2">
+            {selectedCompetition ? (
+              /* ── Detail view ── */
+              <div>
+                <button
+                  type="button"
+                  className="mb-4 flex cursor-pointer items-center gap-1.5 text-xs text-slate-500 transition-colors hover:text-foreground"
+                  onClick={() => setSelectedCompetition(null)}
+                >
+                  ← Back to list
+                </button>
+                <div className="comp-detail">
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: 10, marginBottom: 14 }}>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: isDark ? '#e6edf3' : '#1e293b' }}>{selectedCompetition.name}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 10, color: isDark ? '#6e7681' : '#94a3b8', border: `1px solid ${isDark ? 'rgba(30, 42, 58, 0.8)' : 'rgba(203,213,225,0.8)'}`, padding: '2px 8px', borderRadius: 5, background: 'var(--card)' }}>{selectedCompetition.date}</span>
+                      <span className={`comp-status-${selectedCompetition.status}`}>{selectedCompetition.status}</span>
+                      {selectedCompetition.rank !== null && (
+                        <>
+                          <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, fontWeight: 700, color: isDark ? '#3fb950' : '#166534' }}>#{selectedCompetition.rank} / {selectedCompetition.totalParticipants}</span>
+                          {selectedCompetition.totalParticipants && (
+                            <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 11, color: 'var(--primary)', border: '1px solid rgba(17, 115, 212, 0.35)', padding: '2px 8px', borderRadius: 5, background: 'rgba(17, 115, 212, 0.12)' }}>
+                              Top {Math.round((selectedCompetition.rank / selectedCompetition.totalParticipants) * 100)}%
                             </span>
                           )}
-                          <ChevronRight className="mt-0.5 h-4 w-4 text-slate-600 transition-colors duration-200 group-hover/comp:text-primary" />
-                        </div>
-                      </div>
-                    </button>
-                    ))
-                  })()}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <p style={{ fontSize: 13, color: isDark ? '#8b949e' : '#475569', lineHeight: 1.65, marginBottom: 14 }}>{selectedCompetition.description}</p>
+                  <div>
+                    <div className="modal-section-label">Approach</div>
+                    <div className="modal-skills">
+                      {selectedCompetition.approach.map((a) => (
+                        <span key={a} className="modal-skill">{a}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600, color: isDark ? '#58a6ff' : '#1173d4', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                    onClick={() => window.open(selectedCompetition.url, '_blank')}
+                  >
+                    View on GitHub ↗
+                  </button>
                 </div>
-              ) : null}
-            </div>
-            )
-          })}
+              </div>
+            ) : (
+              /* ── List view ── */
+              <div>
+                <div style={{ position: 'relative', marginBottom: 14 }}>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', width: 14, height: 14, fill: 'none', stroke: isDark ? '#6e7681' : '#94a3b8', strokeWidth: 2, pointerEvents: 'none' }}>
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="m21 21-4.35-4.35" strokeLinecap="round" />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search competitions…"
+                    value={competitionSearch}
+                    onChange={(e) => setCompetitionSearch(e.target.value)}
+                    className="w-full rounded-lg border border-border/60 bg-background/60 py-2 pl-9 pr-4 text-sm text-slate-200 placeholder:text-slate-600 focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                  />
+                </div>
+                {(() => {
+                  const allComps = competitionCategories.flatMap((cat) => cat.competitions)
+                  const q = competitionSearch.toLowerCase().trim()
+                  const filtered = q
+                    ? allComps.filter(
+                        (c) =>
+                          c.name.toLowerCase().includes(q) ||
+                          c.description.toLowerCase().includes(q) ||
+                          c.approach.some((a) => a.toLowerCase().includes(q)) ||
+                          c.status.toLowerCase().includes(q) ||
+                          c.date.toLowerCase().includes(q),
+                      )
+                    : allComps
+                  if (filtered.length === 0) {
+                    return <p style={{ textAlign: 'center', padding: '24px 0', fontSize: 13, color: '#6e7681' }}>No competitions match &ldquo;{competitionSearch}&rdquo;</p>
+                  }
+                  return (
+                    <div className="comp-list">
+                      {filtered.map((comp) => (
+                        <button
+                          key={comp.id}
+                          type="button"
+                          className="comp-item"
+                          onClick={() => setSelectedCompetition(comp)}
+                        >
+                          <div className="comp-item-head">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span className="comp-item-name">{comp.name}</span>
+                              <span className={`comp-status-${comp.status}`}>{comp.status}</span>
+                            </div>
+                            <span className="comp-item-date">{comp.date}</span>
+                          </div>
+                          <div className="comp-item-meta">
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                              {comp.approach.map((a) => <span key={a} className="comp-tag">{a}</span>)}
+                            </div>
+                            {comp.rank !== null && <span className="comp-rank">#{comp.rank}/{comp.totalParticipants}</span>}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )
+                })()}
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

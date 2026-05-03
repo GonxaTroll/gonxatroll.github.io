@@ -5,7 +5,7 @@
 
 :root {
   --background: #101922;
-  --foreground: #cbd5e1;
+  --foreground: #d8e0ec;
   --card: #1a2332;
   --card-foreground: #cbd5e1;
   --popover: #1a2332;
@@ -102,6 +102,15 @@ html.light {
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    text-wrap: balance;
+  }
+
+  h1, h2 {
+    letter-spacing: -0.025em;
+  }
+
+  h3 {
+    letter-spacing: -0.015em;
   }
 
   a {
